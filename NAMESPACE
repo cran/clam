@@ -2,6 +2,7 @@
 
 export(add.dates)
 export(age.pMC)
+export(calBP.14C)
 export(calibrate)
 export(clam)
 export(copyCalibrationCurve)

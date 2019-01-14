@@ -4,29 +4,30 @@
 \name{clam}
 \alias{clam}
 \alias{clam-package}
-\alias{clam}
 \title{clam}
 \usage{
 clam(core = "Example", type = 1, smooth = c(), prob = 0.95,
-  its = 1000, coredir = c(), wghts = 1, cc = 1, cc1 = "IntCal13.14C",
-  cc2 = "Marine13.14C", cc3 = "SHCal13.14C", cc4 = "mixed.14C",
-  postbomb = FALSE, pb1 = "postbomb_NH1.14C", pb2 = "postbomb_NH2.14C",
-  pb3 = "postbomb_NH3.14C", pb4 = "postbomb_SH1-2.14C",
-  pb5 = "postbomb_SH3.14C", ccdir = "", outliers = c(), ignore = c(),
-  youngest = c(), extradates = c(), slump = c(), est = 1,
-  calibt = FALSE, mixed.effect = FALSE, dmin = c(), dmax = c(),
-  every = 1, yrmin = c(), yrmax = c(), yrsteps = 1, pbsteps = 0.01,
-  hpdsteps = 1, BCAD = FALSE, decimals = 0, cmyr = FALSE,
-  ageofdepth = c(), depth = "cm", depthseq = c(), depths.file = FALSE,
-  thickness = 1, hiatus = c(), remove.reverse = 0.5, times = 5,
-  sep = ",", ext = ".csv", runname = c(), storedat = TRUE,
-  threshold = 1e-06, proxies = FALSE, revaxes = FALSE, revd = TRUE,
-  revyr = TRUE, calhght = 0.3, maxhght = 0.01, mirror = TRUE,
-  plotrange = TRUE, bty = "l", mar = c(3.5, 3, 2, 1), mgp = c(2, 1, 0),
+  its = 1000, coredir = c(), ask = TRUE, wghts = 1, cc = 1,
+  cc1 = "IntCal13.14C", cc2 = "Marine13.14C", cc3 = "SHCal13.14C",
+  cc4 = "mixed.14C", postbomb = FALSE, pb1 = "postbomb_NH1.14C",
+  pb2 = "postbomb_NH2.14C", pb3 = "postbomb_NH3.14C",
+  pb4 = "postbomb_SH1-2.14C", pb5 = "postbomb_SH3.14C", ccdir = "",
+  outliers = c(), ignore = c(), youngest = c(), extradates = c(),
+  slump = c(), est = 1, calibt = FALSE, mixed.effect = FALSE,
+  dmin = c(), dmax = c(), every = 1, yrmin = c(), yrmax = c(),
+  yrsteps = 1, pbsteps = 0.01, hpdsteps = 1, BCAD = FALSE,
+  decimals = 0, cmyr = FALSE, ageofdepth = c(), depth = "cm",
+  depthseq = c(), depths.file = FALSE, thickness = 1, hiatus = c(),
+  remove.reverse = 0.5, times = 5, sep = ",", ext = ".csv",
+  runname = c(), storedat = TRUE, threshold = 1e-06,
+  proxies = FALSE, revaxes = FALSE, revd = TRUE, revyr = TRUE,
+  calhght = 0.3, maxhght = 0.01, mirror = TRUE, plotrange = TRUE,
+  bty = "l", mar = c(3.5, 3, 2, 1), mgp = c(2, 1, 0),
   plotpdf = TRUE, plotpng = TRUE, greyscale = c(), yrlab = c(),
-  dlab = c(), calcol = rgb(0, 0.5, 0.5, 0.5), C14col = rgb(0, 0, 1, 0.5),
-  outcol = "red", outlsize = 1, bestcol = "black", rangecol = rgb(0, 0,
-  0, 0.3), slumpcol = grey(0.75), plotname = TRUE, ash = FALSE)
+  dlab = c(), calcol = rgb(0, 0.5, 0.5, 0.5), C14col = rgb(0, 0, 1,
+  0.5), outcol = "red", outlsize = 1, bestcol = "black",
+  rangecol = rgb(0, 0, 0, 0.3), slumpcol = grey(0.75),
+  plotname = TRUE, ash = FALSE)
 }
 \arguments{
 \item{core}{Name of the core, given using quotes. Defaults to the core provided with clam, \code{core="Example"}.}
@@ -51,7 +52,9 @@ clam(core = "Example", type = 1, smooth = c(), prob = 0.95,
 
 \item{its}{Amount of age-model iterations; defaults to \code{its=1000}.}
 
-\item{coredir}{The directory where core runs are stored (each core in its own directory named after the core's name). 
+\item{coredir}{The directory where core runs are stored (each core in its own directory named after the core's name).}
+
+\item{ask}{By default, and as per R rules, clam will ask if it is OK to make or write to a directory.
 Defaults to \code{coredir="clam_runs"}, or to \code{coredir="Cores"} if this folder exists where R is working.}
 
 \item{wghts}{Weights can be applied to dated depths as follows:
