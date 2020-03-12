@@ -4,20 +4,51 @@
 \alias{calibrate}
 \title{Calibrate individual 14C dates.}
 \usage{
-calibrate(cage = 2450, error = 50, reservoir = 0, prob = 0.95,
-  cc = 1, cc1 = "IntCal13.14C", cc2 = "Marine13.14C",
-  cc3 = "SHCal13.14C", cc4 = "mixed.14C", ccdir = "",
-  postbomb = FALSE, pb1 = "postbomb_NH1.14C",
-  pb2 = "postbomb_NH2.14C", pb3 = "postbomb_NH3.14C",
-  pb4 = "postbomb_SH1-2.14C", pb5 = "postbomb_SH3.14C", yrsteps = 1,
-  pbsteps = 0.01, hpdsteps = 1, calibt = FALSE, yrmin = c(),
-  yrmax = c(), minC14 = c(), maxC14 = c(), times = 5,
-  calheight = 0.3, expand = 0.1, threshold = 1e-06,
-  storedat = FALSE, graph = TRUE, xlab = c(), ylab = c(),
-  BCAD = FALSE, mar = c(3.5, 3, 2, 1), mgp = c(1.7, 0.8, 0),
-  bty = "l", xaxs = "i", yaxs = "i", title = c(),
-  date.col = "red", cc.col = rgb(0, 0.5, 0, 0.7), dist.col = rgb(0,
-  0, 0, 0.3), sd.col = rgb(0, 0, 0, 0.5))
+calibrate(
+  cage = 2450,
+  error = 50,
+  reservoir = 0,
+  prob = 0.95,
+  cc = 1,
+  cc1 = "IntCal13.14C",
+  cc2 = "Marine13.14C",
+  cc3 = "SHCal13.14C",
+  cc4 = "mixed.14C",
+  ccdir = "",
+  postbomb = FALSE,
+  pb1 = "postbomb_NH1.14C",
+  pb2 = "postbomb_NH2.14C",
+  pb3 = "postbomb_NH3.14C",
+  pb4 = "postbomb_SH1-2.14C",
+  pb5 = "postbomb_SH3.14C",
+  yrsteps = 1,
+  pbsteps = 0.01,
+  hpdsteps = 1,
+  calibt = FALSE,
+  yrmin = NULL,
+  yrmax = NULL,
+  minC14 = NULL,
+  maxC14 = NULL,
+  times = 5,
+  calheight = 0.3,
+  expand = 0.1,
+  threshold = 1e-06,
+  storedat = FALSE,
+  graph = TRUE,
+  xlab = NULL,
+  ylab = NULL,
+  BCAD = FALSE,
+  mar = c(3.5, 3, 2, 1),
+  mgp = c(1.7, 0.8, 0),
+  bty = "l",
+  xaxs = "i",
+  yaxs = "i",
+  title = NULL,
+  date.col = "red",
+  cc.col = rgb(0, 0.5, 0, 0.7),
+  dist.col = rgb(0, 0, 0, 0.3),
+  sd.col = rgb(0, 0, 0, 0.5)
+)
 }
 \arguments{
 \item{cage}{Mean of the uncalibrated C-14 age.}
@@ -59,7 +90,7 @@ Use \code{ccdir="."} to choose current working directory. Use \code{ccdir="/Curv
 
 \item{hpdsteps}{Temporal resolution at which highest posterior density ranges are calibrated (in calendar years).}
 
-\item{calibt}{Off by default; provide two parameters such as c(3,4).}
+\item{calibt}{Calibration based on the student-t distribution. By default, the Gaussian distribution is used (\code{calibt=FALSE}). To use the student-t distribution, provide two parameters such as \code{calibt=c(3,4)}.}
 
 \item{yrmin}{Minimum of calendar axis (default calculated automatically).}
 
@@ -81,9 +112,9 @@ Use \code{ccdir="."} to choose current working directory. Use \code{ccdir="/Curv
 
 \item{graph}{Plot a graph of the calibrated date. If set to FALSE, only the hpd ranges will be given.}
 
-\item{xlab}{Alternative names can be provided.}
+\item{xlab}{Label of the horizontal axis. Defaults to the calendar scale, but alternative names can be provided.}
 
-\item{ylab}{Alternative names can be provided.}
+\item{ylab}{Label of the vertical axis. Defaults to the 14C scale, but alternative names can be provided.}
 
 \item{BCAD}{Use BC/AD or cal BP scale (default cal BP).}
 

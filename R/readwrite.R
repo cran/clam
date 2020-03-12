@@ -2,13 +2,17 @@
 # read the data and perform first calculations incl. calibrations
 .read.clam <- function(name, namedir,ext, hpdsteps, yrsteps, prob, times, sep, BCAD, storedat, ignore, thickness, youngest, slump, threshold, theta, f.mu, f.sigma, calibt, extradates, calcurve, postbomb)
   {
-    # read the file with the dating information
-    dat <- list(coredir=paste(namedir, name, "/", sep=""), name=name)
-    if(!file.exists(paste(namedir, name, sep="")))
-      stop(paste("\n\n Warning, cannot find a folder within",namedir," named ", name, ". Have you saved it in the right place and with the right name? Please check the manual\n\n", sep=""), call.=FALSE)
-    if(!file.exists(paste(dat$coredir, name, ext, sep="")))
+    coredir=paste(namedir, name, "/", sep="")
+	if(!file.exists(paste(namedir, name, sep="")))
+      stop(paste("\n\n Warning, cannot find a folder within", namedir," named ", name, ". Have you saved it in the right place and with the right name? Please check the manual\n\n", sep=""), call.=FALSE)
+    if(!file.exists(paste(coredir, name, ext, sep="")))
       stop(paste(" \n\n Warning, cannot find file ", name, ".csv in folder",namedir, name, ". Have you saved it in the right place and named it correctly? Please check the manual\n\n", sep=""), call.=FALSE)
-    dets <- suppressWarnings(read.table(paste(dat$coredir, name, ext, sep=""), comment.char="", header=TRUE, sep=sep, na.strings = c("#N/A!", "NA", "@NA")))
+    dets <- suppressWarnings(read.table(paste(coredir, name, ext, sep=""), comment.char="", header=TRUE, sep=sep, na.strings = c("#N/A!", "NA", "@NA")))
+
+    # read the file with the dating information
+    dat <- list(coredir=coredir, name=name, calib=list(), ignore=NULL, ID=character(nrow(dets)), cage=numeric(nrow(dets)), 
+    error=numeric(nrow(dets)), f.cage=numeric(nrow(dets)), f.error=numeric(nrow(dets)), outside=NULL, cal=NULL, res=NULL, depth=NULL, thick=NULL, BCAD=NULL,
+    hpd=list(), mid1=numeric(nrow(dets)), mid2=numeric(nrow(dets)), wmn=numeric(nrow(dets)), med=numeric(nrow(dets)), mode=numeric(nrow(dets))) 
 
     # ignore dates if required, add thickness column if it was left out
     if(length(ignore) > 0)
@@ -24,7 +28,8 @@
     if(length(slump) > 0)
       {
         d.adapt <- dets[,6]
-        d.lost <- c()
+        #d.lost <- c()
+        d.lost <- NULL # has to be NULL since we don't know this var's final size
         for(i in 1:nrow(slump))
           {
             below.slump <- which(dets[,6] > max(slump[i,]))
@@ -41,7 +46,7 @@
     x <- 0
     for(i in 2:7) if(is.factor(dets[,i])) x <- 1
     if(x == 1)
-		stop(paste("\n Some value fields in ", name, ".csv contain letters, please adapt", sep=""), call.=FALSE)
+      stop(paste("\n Some value fields in ", name, ".csv contain letters, please adapt", sep=""), call.=FALSE)
     if(length(dets[is.na(dets[,2]),2])+length(dets[is.na(dets[,3]),3]) != nrow(dets))
       stop(paste("\n Remove duplicate entries within the C14 and calendar fields in ", name, ".csv", sep=""), call.=FALSE)
     if(min(dets[,4]) <= 0)
@@ -120,7 +125,7 @@
                 calib <- cbind(seq(youngest-(3*yrsteps), youngest+yrsteps, length=5), c(0:3,0)/3) else
                 calib <- cbind(seq(youngest-yrsteps, youngest+(3*yrsteps), length=5), c(0,3:0)/3)
           }
-        dat$calib[[i]] <- calib
+        dat$calib[[i]] <- calib  
         dat$hpd[[i]] <- .hpd(calib, prob=prob, hpdsteps=hpdsteps, yrsteps=yrsteps)
         dat$mid1[[i]] <- (dat$hpd[[i]][1] + dat$hpd[[i]][2*nrow(dat$hpd[[i]])])/2
         yrs <- calib[,1]
@@ -150,7 +155,8 @@
     if(depths.file && file.exists(dd <- paste(namedir, name, "/", name, "_depths.txt", sep="")))
       {
         dd <- read.table(dd)[,1]
-        this <- c()
+        #this <- c()
+		this <- numeric(length(dd))
         for(i in 1:length(dd))
           this[i] <- which(calrange[,1]==dd[i])[1] # find where the relevant ages are
 	    write.table(calrange[this,], paste(dat$coredir, name, runname, "_ages.txt", sep=""), row.names=FALSE, col.names=c("depth", paste("min", 100*prob, "%", sep=""), paste("max", 100*prob, "%", sep=""), "best", "acc.rate"), quote=FALSE, sep="\t")
@@ -237,13 +243,13 @@
     if(plotpdf)
       {
         pdf(file=paste(dat$coredir, name, runname, ".pdf", sep=""))
-        .ageplot(yrmin, yrmax, dmin, dmax, revaxes, revd, revyr, dlab, yrlab, hiatus, depthseq, outliers, plotrange, BCAD, greyscale, if(length(greyscale)>0) chron else c(), C14col, outcol, outlsize, bestcol, rangecol, dat, calrange, depth, calhght, maxhght, mirror, calcol, slump, slumpcol, plotname, name, bty, mar, mgp, ash)
+        .ageplot(yrmin, yrmax, dmin, dmax, revaxes, revd, revyr, dlab, yrlab, hiatus, depthseq, outliers, plotrange, BCAD, greyscale, if(length(greyscale)>0) chron else NULL, C14col, outcol, outlsize, bestcol, rangecol, dat, calrange, depth, calhght, maxhght, mirror, calcol, slump, slumpcol, plotname, name, bty, mar, mgp, ash)
         dev.off()
       }
     if(plotpng)
       {
         png(filename = paste(dat$coredir, name, runname, ".png", sep=""))
-        .ageplot(yrmin, yrmax, dmin, dmax, revaxes, revd, revyr, dlab, yrlab, hiatus, depthseq, outliers, plotrange, BCAD, greyscale, if(length(greyscale)>0) chron else c(), C14col, outcol, outlsize, bestcol, rangecol, dat, calrange, depth, calhght, maxhght, mirror, calcol, slump, slumpcol, plotname, name, bty, mar, mgp, ash)
+        .ageplot(yrmin, yrmax, dmin, dmax, revaxes, revd, revyr, dlab, yrlab, hiatus, depthseq, outliers, plotrange, BCAD, greyscale, if(length(greyscale)>0) chron else NULL, C14col, outcol, outlsize, bestcol, rangecol, dat, calrange, depth, calhght, maxhght, mirror, calcol, slump, slumpcol, plotname, name, bty, mar, mgp, ash)
         dev.off()
       }
   }

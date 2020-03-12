@@ -1,3 +1,12 @@
+# clam 2.3.4
+
+* updated the code to deal with changes in how base-R deals with c() in loops
+
+# clam 2.3.3
+
+* deptime.age and deptime.depth now invisibly return the deposition time values, for future manipulation such as summary(deptime.age(900))
+* Updated help functions of clam and calibrate
+
 # clam 2.3.2
 
 * new function calBP.14C to find the mu (IntCal 14C age) belonging to a single calendar year (suggested by Andres Christen)

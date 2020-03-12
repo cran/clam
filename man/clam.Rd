@@ -3,31 +3,87 @@
 \docType{package}
 \name{clam}
 \alias{clam}
-\alias{clam-package}
 \title{clam}
 \usage{
-clam(core = "Example", type = 1, smooth = c(), prob = 0.95,
-  its = 1000, coredir = c(), ask = TRUE, wghts = 1, cc = 1,
-  cc1 = "IntCal13.14C", cc2 = "Marine13.14C", cc3 = "SHCal13.14C",
-  cc4 = "mixed.14C", postbomb = FALSE, pb1 = "postbomb_NH1.14C",
-  pb2 = "postbomb_NH2.14C", pb3 = "postbomb_NH3.14C",
-  pb4 = "postbomb_SH1-2.14C", pb5 = "postbomb_SH3.14C", ccdir = "",
-  outliers = c(), ignore = c(), youngest = c(), extradates = c(),
-  slump = c(), est = 1, calibt = FALSE, mixed.effect = FALSE,
-  dmin = c(), dmax = c(), every = 1, yrmin = c(), yrmax = c(),
-  yrsteps = 1, pbsteps = 0.01, hpdsteps = 1, BCAD = FALSE,
-  decimals = 0, cmyr = FALSE, ageofdepth = c(), depth = "cm",
-  depthseq = c(), depths.file = FALSE, thickness = 1, hiatus = c(),
-  remove.reverse = 0.5, times = 5, sep = ",", ext = ".csv",
-  runname = c(), storedat = TRUE, threshold = 1e-06,
-  proxies = FALSE, revaxes = FALSE, revd = TRUE, revyr = TRUE,
-  calhght = 0.3, maxhght = 0.01, mirror = TRUE, plotrange = TRUE,
-  bty = "l", mar = c(3.5, 3, 2, 1), mgp = c(2, 1, 0),
-  plotpdf = TRUE, plotpng = TRUE, greyscale = c(), yrlab = c(),
-  dlab = c(), calcol = rgb(0, 0.5, 0.5, 0.5), C14col = rgb(0, 0, 1,
-  0.5), outcol = "red", outlsize = 1, bestcol = "black",
-  rangecol = rgb(0, 0, 0, 0.3), slumpcol = grey(0.75),
-  plotname = TRUE, ash = FALSE)
+clam(
+  core = "Example",
+  type = 1,
+  smooth = NULL,
+  prob = 0.95,
+  its = 1000,
+  coredir = NULL,
+  ask = TRUE,
+  wghts = 1,
+  cc = 1,
+  cc1 = "IntCal13.14C",
+  cc2 = "Marine13.14C",
+  cc3 = "SHCal13.14C",
+  cc4 = "mixed.14C",
+  postbomb = FALSE,
+  pb1 = "postbomb_NH1.14C",
+  pb2 = "postbomb_NH2.14C",
+  pb3 = "postbomb_NH3.14C",
+  pb4 = "postbomb_SH1-2.14C",
+  pb5 = "postbomb_SH3.14C",
+  ccdir = "",
+  outliers = NULL,
+  ignore = NULL,
+  youngest = NULL,
+  extradates = NULL,
+  slump = NULL,
+  est = 1,
+  calibt = FALSE,
+  mixed.effect = FALSE,
+  dmin = NULL,
+  dmax = NULL,
+  every = 1,
+  yrmin = NULL,
+  yrmax = NULL,
+  yrsteps = 1,
+  pbsteps = 0.01,
+  hpdsteps = 1,
+  BCAD = FALSE,
+  decimals = 0,
+  cmyr = FALSE,
+  ageofdepth = NULL,
+  depth = "cm",
+  depthseq = NULL,
+  depths.file = FALSE,
+  thickness = 1,
+  hiatus = NULL,
+  remove.reverse = 0.5,
+  times = 5,
+  sep = ",",
+  ext = ".csv",
+  runname = NULL,
+  storedat = TRUE,
+  threshold = 1e-06,
+  proxies = FALSE,
+  revaxes = FALSE,
+  revd = TRUE,
+  revyr = TRUE,
+  calhght = 0.3,
+  maxhght = 0.01,
+  mirror = TRUE,
+  plotrange = TRUE,
+  bty = "l",
+  mar = c(3.5, 3, 2, 1),
+  mgp = c(2, 1, 0),
+  plotpdf = TRUE,
+  plotpng = TRUE,
+  greyscale = NULL,
+  yrlab = NULL,
+  dlab = NULL,
+  calcol = rgb(0, 0.5, 0.5, 0.5),
+  C14col = rgb(0, 0, 1, 0.5),
+  outcol = "red",
+  outlsize = 1,
+  bestcol = "black",
+  rangecol = rgb(0, 0, 0, 0.3),
+  slumpcol = grey(0.75),
+  plotname = TRUE,
+  ash = FALSE
+)
 }
 \arguments{
 \item{core}{Name of the core, given using quotes. Defaults to the core provided with clam, \code{core="Example"}.}
@@ -110,7 +166,7 @@ For example, use \code{ccdir="."} to choose current working directory, or \code{
  \item midpoints of entire calibrated distributions (including years outside the calibrated ranges)
 }}
 
-\item{calibt}{Off by default; provide two parameters such as \code{c(3,4)}.}
+\item{calibt}{Calibration based on the student-t distribution. By default, the Gaussian distribution is used (\code{calibt=FALSE}). To use the student-t distribution, provide two parameters such as \code{calibt=c(3,4)}.}
 
 \item{mixed.effect}{Set to \code{TRUE} to activate mixed-effect modelling.}
 
@@ -159,7 +215,7 @@ Set at \code{FALSE} to avoid removing models with reversals.}
 
 \item{runname}{Text to add to the core name for specific runs, e.g., "MyCore_Test1"}
 
-\item{storedat}{Store the dates and age-model within R after a \code{clam} run.}
+\item{storedat}{Store the dates and age-model within R after a \code{clam} run. Defaults to \code{storedat=TRUE}.}
 
 \item{threshold}{Below which value should probabilities be excluded from calculations.}
 
@@ -192,9 +248,9 @@ and \code{"l"}, \code{"7"}, \code{"c"}, \code{"u"}, "]" or \code{"o"} for corres
 
 \item{greyscale}{Produce a grey-scale representation of all age-models (number gives resolution, e.g., 500 bins; will cancel plotting of the confidence intervals).}
 
-\item{yrlab}{Alternative names can be provided.}
+\item{yrlab}{Label of the calendar axis. Defaults to either cal BP or BC/AD. Alternative names can be provided.}
 
-\item{dlab}{Alternative names can be provided.}
+\item{dlab}{Label of the depth axis. Defaults to \code{dlab="Depth (cm)"} (assuming \code{depth="cm"}), but alternative names can be provided.}
 
 \item{calcol}{Colour of the calibrated distributions in the age-depth plot.}
 

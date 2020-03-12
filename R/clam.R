@@ -12,7 +12,7 @@
 #' @name clam
 NULL  
 
-# done:  
+# done: 
 
 # do: 
 
@@ -119,7 +119,7 @@ NULL
 #'   \item maximum densities of calibrated distributions 
 #'   \item midpoints of entire calibrated distributions (including years outside the calibrated ranges)
 #'  }
-#' @param calibt Off by default; provide two parameters such as \code{c(3,4)}.
+#' @param calibt Calibration based on the student-t distribution. By default, the Gaussian distribution is used (\code{calibt=FALSE}). To use the student-t distribution, provide two parameters such as \code{calibt=c(3,4)}.
 #' @param mixed.effect Set to \code{TRUE} to activate mixed-effect modelling.
 #' @param dmin Minimum depth of age-depth model (e.g., extrapolate).
 #' @param dmax Maximum depth of age-depth model (e.g., extrapolate).
@@ -144,7 +144,7 @@ NULL
 #' @param sep Separator between the fields of the plain text file containing the dating information.
 #' @param ext Extension of the file containing the dating information.
 #' @param runname Text to add to the core name for specific runs, e.g., "MyCore_Test1"
-#' @param storedat Store the dates and age-model within R after a \code{clam} run.
+#' @param storedat Store the dates and age-model within R after a \code{clam} run. Defaults to \code{storedat=TRUE}.
 #' @param threshold Below which value should probabilities be excluded from calculations.
 #' @param proxies Set to \code{TRUE} to plot proxies against age after the run.
 #' @param revaxes Set to \code{TRUE} to plot ages on the vertical axis and depth on the horizontal axis.
@@ -161,8 +161,8 @@ NULL
 #' @param plotpdf Produce a pdf file of the age-depth plot.
 #' @param plotpng Produce a png file of the age-depth plot.
 #' @param greyscale Produce a grey-scale representation of all age-models (number gives resolution, e.g., 500 bins; will cancel plotting of the confidence intervals).
-#' @param yrlab Alternative names can be provided.
-#' @param dlab Alternative names can be provided.
+#' @param yrlab Label of the calendar axis. Defaults to either cal BP or BC/AD. Alternative names can be provided.
+#' @param dlab Label of the depth axis. Defaults to \code{dlab="Depth (cm)"} (assuming \code{depth="cm"}), but alternative names can be provided.
 #' @param calcol Colour of the calibrated distributions in the age-depth plot.
 #' @param C14col Colour of the calibrated ranges of the dates.
 #' @param outcol Colour of outlying dates.
@@ -195,7 +195,7 @@ NULL
 #' Blaauw, M., 2010. Methods and code for 'classical' age-modelling of radiocarbon sequences. Quaternary Geochronology 5, 512-518
 #' \url{http://dx.doi.org/10.1016/j.quageo.2010.01.002}
 #' @export
-clam <- function(core="Example", type=1, smooth=c(), prob=0.95, its=1000, coredir=c(), ask=TRUE, wghts=1, cc=1, cc1="IntCal13.14C", cc2="Marine13.14C", cc3="SHCal13.14C", cc4="mixed.14C",  postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C",pb5="postbomb_SH3.14C", ccdir="", outliers=c(), ignore=c(), youngest=c(), extradates=c(), slump=c(), est=1, calibt=FALSE, mixed.effect=FALSE, dmin=c(), dmax=c(), every=1, yrmin=c(), yrmax=c(), yrsteps=1, pbsteps=0.01, hpdsteps=1, BCAD=FALSE, decimals=0, cmyr=FALSE, ageofdepth=c(), depth="cm", depthseq=c(), depths.file=FALSE, thickness=1, hiatus=c(), remove.reverse=0.5, times=5, sep=",", ext=".csv", runname=c(), storedat=TRUE, threshold=1e-6, proxies=FALSE, revaxes=FALSE, revd=TRUE, revyr=TRUE, calhght=0.3, maxhght=0.01, mirror=TRUE, plotrange=TRUE, bty="l", mar=c(3.5,3,2,1), mgp=c(2,1,0), plotpdf=TRUE, plotpng=TRUE, greyscale=c(), yrlab=c(), dlab=c(), calcol=rgb(0,0.5,0.5,0.5), C14col=rgb(0,0,1,0.5), outcol="red", outlsize=1, bestcol="black", rangecol=rgb(0,0,0,0.3), slumpcol=grey(0.75), plotname=TRUE, ash=FALSE) {
+clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, coredir=NULL, ask=TRUE, wghts=1, cc=1, cc1="IntCal13.14C", cc2="Marine13.14C", cc3="SHCal13.14C", cc4="mixed.14C",  postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C",pb5="postbomb_SH3.14C", ccdir="", outliers=NULL, ignore=NULL, youngest=NULL, extradates=NULL, slump=NULL, est=1, calibt=FALSE, mixed.effect=FALSE, dmin=NULL, dmax=NULL, every=1, yrmin=NULL, yrmax=NULL, yrsteps=1, pbsteps=0.01, hpdsteps=1, BCAD=FALSE, decimals=0, cmyr=FALSE, ageofdepth=NULL, depth="cm", depthseq=NULL, depths.file=FALSE, thickness=1, hiatus=NULL, remove.reverse=0.5, times=5, sep=",", ext=".csv", runname=NULL, storedat=TRUE, threshold=1e-6, proxies=FALSE, revaxes=FALSE, revd=TRUE, revyr=TRUE, calhght=0.3, maxhght=0.01, mirror=TRUE, plotrange=TRUE, bty="l", mar=c(3.5,3,2,1), mgp=c(2,1,0), plotpdf=TRUE, plotpng=TRUE, greyscale=NULL, yrlab=NULL, dlab=NULL, calcol=rgb(0,0.5,0.5,0.5), C14col=rgb(0,0,1,0.5), outcol="red", outlsize=1, bestcol="black", rangecol=rgb(0,0,0,0.3), slumpcol=grey(0.75), plotname=TRUE, ash=FALSE) {
   # If coredir is left empty, check for a folder named Cores in the current working directory, and if this doesn't exist, for a folder called clam_runs (make this folder if it doesn't exist yet).
   # Check if we have write access. If not, tell the user to provide a different, writeable location for coredir. 
 
@@ -391,7 +391,7 @@ clam <- function(core="Example", type=1, smooth=c(), prob=0.95, its=1000, coredi
 
   # re-correct the depths if slumps were applied
   if(length(slump) > 0) {
-    dat <- .read.clam(core, coredir, ext, hpdsteps, yrsteps, prob, times, sep, BCAD, storedat, ignore, thickness, youngest, slump=c(), threshold, theta, f.mu, f.sigma, calibt, extradates, calcurve, postbomb) # read in the original dates again
+    dat <- .read.clam(core, coredir, ext, hpdsteps, yrsteps, prob, times, sep, BCAD, storedat, ignore, thickness, youngest, slump=NULL, threshold, theta, f.mu, f.sigma, calibt, extradates, calcurve, postbomb) # read in the original dates again
     calrange <- calrange[which(calrange[,1] <= dmax),]
     d <- calrange[,1]
     for(i in 1:nrow(slump)) {
@@ -409,11 +409,11 @@ clam <- function(core="Example", type=1, smooth=c(), prob=0.95, its=1000, coredi
     yrmax <- max(dat$mid1, calrange[,3])
   if(length(ageofdepth > 0))
     layout(matrix(c(1,2,1,3), nrow=2), heights=c(.7,.3))
-  .ageplot(yrmin, yrmax, dmin, dmax, revaxes, revd, revyr, yrlab, dlab, hiatus, depthseq, outliers, plotrange, BCAD, greyscale, if(length(greyscale)>0) get('chron') else c(), C14col, outcol, outlsize, bestcol, rangecol, dat, calrange, depth, calhght, maxhght, mirror, calcol, slump, slumpcol, plotname, core, bty, mar, mgp, ash)
+  .ageplot(yrmin, yrmax, dmin, dmax, revaxes, revd, revyr, yrlab, dlab, hiatus, depthseq, outliers, plotrange, BCAD, greyscale, if(length(greyscale)>0) get('chron') else NULL, C14col, outcol, outlsize, bestcol, rangecol, dat, calrange, depth, calhght, maxhght, mirror, calcol, slump, slumpcol, plotname, core, bty, mar, mgp, ash)
 
   # write files providing calibrated dates, age-model and settings
   colnames(calrange) <- c("Depth", paste("min.", 100*prob, "%range", sep=""), paste("max.", 100*prob, "%range", sep=""), "point")
-  .write.clam(dat, coredir, runname, calrange, core, prob, type, remove.reverse, smooth, wghts, its, outliers, ignore, est, BCAD, yrsteps, every, decimals, cmyr, depth, depthseq, hiatus, gfit, reversal, plotpdf, plotpng, yrmin, yrmax, dmin, dmax, dlab, yrlab, plotrange, greyscale, if(length(greyscale)>0) get('chron') else c(), C14col, outcol, outlsize, bestcol, rangecol, calhght, maxhght, mirror, calcol, slump, slumpcol, revaxes, revyr, revd, calibt, youngest, extradates, plotname, calcurve, ccname, postbomb, pbnames, depths.file, bty, mar, mgp, ash)
+  .write.clam(dat, coredir, runname, calrange, core, prob, type, remove.reverse, smooth, wghts, its, outliers, ignore, est, BCAD, yrsteps, every, decimals, cmyr, depth, depthseq, hiatus, gfit, reversal, plotpdf, plotpng, yrmin, yrmax, dmin, dmax, dlab, yrlab, plotrange, greyscale, if(length(greyscale)>0) get('chron') else NULL, C14col, outcol, outlsize, bestcol, rangecol, calhght, maxhght, mirror, calcol, slump, slumpcol, revaxes, revyr, revd, calibt, youngest, extradates, plotname, calcurve, ccname, postbomb, pbnames, depths.file, bty, mar, mgp, ash)
   closeAllConnections()
 
   if(storedat) {
@@ -469,7 +469,8 @@ clam <- function(core="Example", type=1, smooth=c(), prob=0.95, its=1000, coredi
             if(type==5) chron <- .loess(depthseq, smooth, wghts, errors, depths, its, chron, smp)
 
     # test against age reversals
-    warp <- c()
+    # warp <- c()
+    warp <- NULL
     if(remove.reverse!=FALSE)
       for(i in 1:ncol(chron))
         if(!BCAD && min(diff(chron[,i])) <= 0 || BCAD && max(diff(chron[,i])) >= 0)
@@ -495,7 +496,8 @@ clam <- function(core="Example", type=1, smooth=c(), prob=0.95, its=1000, coredi
 
     # find uncertainty ranges of calendar age for each depth of the core
     calrange <- array(0, dim=c(nrow(chron), 2))
-    mn <- c()
+    # mn <- c()
+    mn <- numeric(nrow(chron))
     for(i in 1:nrow(chron))
       {
         x <- chron[i,2:ncol(chron)]
@@ -505,7 +507,7 @@ clam <- function(core="Example", type=1, smooth=c(), prob=0.95, its=1000, coredi
       }
     if(est==1)
       cbind(depthseq, cbind(calrange, mn)) else
-      cbind(depthseq, cbind(calrange, chron[,1]))
+        cbind(depthseq, cbind(calrange, chron[,1]))
   }
 
 

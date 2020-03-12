@@ -4,9 +4,15 @@
 \alias{mix.calibrationcurves}
 \title{Build a custom-made, mixed calibration curve.}
 \usage{
-mix.calibrationcurves(proportion = 0.5, cc1 = "IntCal13.14C",
-  cc2 = "Marine13.14C", name = "mixed.14C", dirname = ".",
-  offset = c(0, 0), sep = "\\t")
+mix.calibrationcurves(
+  proportion = 0.5,
+  cc1 = "IntCal13.14C",
+  cc2 = "Marine13.14C",
+  name = "mixed.14C",
+  dirname = ".",
+  offset = c(0, 0),
+  sep = "\\t"
+)
 }
 \arguments{
 \item{proportion}{Proportion of the first calibration curve required. e.g., change to \code{proportion=0.7} if \code{cc1} should contribute 70\% (and \code{cc2} 30\%) to the mixed curve.}

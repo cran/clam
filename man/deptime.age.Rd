@@ -14,7 +14,7 @@ deptime.age(age, yrcm = TRUE, prob = 0.95)
 \item{prob}{Probability level at which to calculate the ranges.}
 }
 \value{
-The slope of a straight curve between depths above and below the desired point
+Returns (invisibly) the modelled deposition times at a specific age, a histogram and confidence ranges.
 }
 \description{
 Calculates *for each iteration* the slope of a straight curve between 
@@ -27,8 +27,9 @@ Renamed from previous accrate.age function to avoid confusion with accrate.age f
 }
 \examples{
   clam(coredir=tempdir(), storedat=TRUE)
-  deptime.age (5000)
-deptime.age(5000, yrcm=FALSE) # to calculate sedimentation times in cm/yr, so accumulation rates
+  dp <- deptime.age(5000)
+  summary(dp)
+  deptime.age(5000, yrcm=FALSE) # to calculate sedimentation times in cm/yr, so accumulation rates
 }
 \author{
 Maarten Blaauw

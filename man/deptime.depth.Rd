@@ -15,7 +15,7 @@ deptime.depth(depth, yrcm = TRUE, prob = 0.95)
 \item{prob}{Probability level at which to calculate the ranges.}
 }
 \value{
-The slope of a straight curve between depths above and below the desired point.
+Returns (invisibly) the modelled deposition times for a specific depths, a histogram and confidence ranges.
 }
 \description{
 Calculates *for each iteration* the slope of a straight curve between depths
@@ -28,7 +28,8 @@ Renamed from previous accrate.depth function to avoid confusion with accrate.dep
 }
 \examples{
   clam(coredir=tempdir(), storedat=TRUE) 
-  deptime.depth(20)
+  dp <- deptime.depth(20)
+  summary(dp)
   deptime.depth(20, FALSE) # to calculate accumulation rates in cm/yr
 
 }

@@ -4,11 +4,21 @@
 \alias{calBP.14C}
 \title{Find the 14C age and error belonging to a cal BP age.}
 \usage{
-calBP.14C(yr, cc = 1, cc1 = "IntCal13.14C", cc2 = "Marine13.14C",
-  cc3 = "SHCal13.14C", cc4 = "mixed.14C", ccdir = "",
-  postbomb = FALSE, pb1 = "postbomb_NH1.14C",
-  pb2 = "postbomb_NH2.14C", pb3 = "postbomb_NH3.14C",
-  pb4 = "postbomb_SH1-2.14C", pb5 = "postbomb_SH3.14C")
+calBP.14C(
+  yr,
+  cc = 1,
+  cc1 = "IntCal13.14C",
+  cc2 = "Marine13.14C",
+  cc3 = "SHCal13.14C",
+  cc4 = "mixed.14C",
+  ccdir = "",
+  postbomb = FALSE,
+  pb1 = "postbomb_NH1.14C",
+  pb2 = "postbomb_NH2.14C",
+  pb3 = "postbomb_NH3.14C",
+  pb4 = "postbomb_SH1-2.14C",
+  pb5 = "postbomb_SH3.14C"
+)
 }
 \arguments{
 \item{yr}{The cal BP year.}

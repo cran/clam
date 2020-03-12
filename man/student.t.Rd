@@ -4,10 +4,21 @@
 \alias{student.t}
 \title{Comparison dates calibrated using both the student-t distribution and the the normal distribution.}
 \usage{
-student.t(y = 2450, error = 50, t.a = 3, t.b = 4, cc = 1,
-  postbomb = c(), cc1 = "IntCal13", cc2 = "Marine13",
-  cc3 = "SHCal13", cc4 = "mixed", ccdir = "", Cutoff = 1e-05,
-  times = 8)
+student.t(
+  y = 2450,
+  error = 50,
+  t.a = 3,
+  t.b = 4,
+  cc = 1,
+  postbomb = NULL,
+  cc1 = "IntCal13",
+  cc2 = "Marine13",
+  cc3 = "SHCal13",
+  cc4 = "mixed",
+  ccdir = "",
+  Cutoff = 1e-05,
+  times = 8
+)
 }
 \arguments{
 \item{y}{The reported mean of the date.}

@@ -13,10 +13,11 @@
 #' @param yrcm Calculate in years per cm, or alternatively in cm per yr.
 #' @param prob  Probability level at which to calculate the ranges.
 #' @author Maarten Blaauw
-#' @return The slope of a straight curve between depths above and below the desired point.
+#' @return Returns (invisibly) the modelled deposition times for a specific depths, a histogram and confidence ranges.
 #' @examples
 #'   clam(coredir=tempdir(), storedat=TRUE) 
-#'   deptime.depth(20)
+#'   dp <- deptime.depth(20)
+#'   summary(dp)
 #'   deptime.depth(20, FALSE) # to calculate accumulation rates in cm/yr
 #' 
 #' @export
@@ -38,6 +39,7 @@ deptime.depth <- function(depth, yrcm=TRUE, prob=.95)
     acc <- range(acc[acc[,2] <= prob,1])
     rect(acc[1], 0, acc[2], -999, col=grey(.5), border=grey(.5))
     cat(100*prob, "% ranges: ", acc[1], " to ", acc[2], if(yrcm) " yr/cm\n" else " cm/yr\n", sep="")
+	invisible(accrate)  
   }
 
 
@@ -54,18 +56,20 @@ deptime.depth <- function(depth, yrcm=TRUE, prob=.95)
 #' @param yrcm Calculate in years per cm, or alternatively in cm per yr.
 #' @param prob Probability level at which to calculate the ranges.
 #' @author Maarten Blaauw
-#' @return The slope of a straight curve between depths above and below the desired point
+#' @return Returns (invisibly) the modelled deposition times at a specific age, a histogram and confidence ranges.
 #' @examples 
 #'   clam(coredir=tempdir(), storedat=TRUE)
-#'   deptime.age (5000)
-#' deptime.age(5000, yrcm=FALSE) # to calculate sedimentation times in cm/yr, so accumulation rates
+#'   dp <- deptime.age(5000)
+#'   summary(dp)
+#'   deptime.age(5000, yrcm=FALSE) # to calculate sedimentation times in cm/yr, so accumulation rates
 #' @export
 deptime.age <- function(age, yrcm=TRUE, prob=.95)
   {
     chron <- get('chron') 
     calrange <- get('calrange')
 	
-    accrate <- c()
+    accrate <- numeric(ncol(chron))
+    # accrate <- c()
     for(i in 1:ncol(chron))
       {
         a <- max(which(chron[,i] <= age))
@@ -81,6 +85,7 @@ deptime.age <- function(age, yrcm=TRUE, prob=.95)
     acc <- range(acc[acc[,2] <= prob,1])
     rect(acc[1], 0, acc[2], -999, col=grey(.5), border=grey(.5))
     cat(100*prob, "% ranges: ", acc[1], " to ", acc[2], if(yrcm) " yr/cm\n" else " cm/yr\n", sep="")
+	invisible(as.double(accrate))
   }
 
 

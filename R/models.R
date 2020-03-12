@@ -1,14 +1,15 @@
 # sample point age estimates from the calibrated distributions ('its' times)
 # the probability of a year being sampled is proportional to its calibrated probability
-.smpl <- function(its, depths, calibs, Est)
-  {
-    smp <- array(1, dim=c(length(depths), 1+its, 2))
-    smp[,1,1] <- Est
-    for(i in 1:length(calibs))
-      smp[i,(1:its)+1,] <-
-        calibs[[i]][sample(1:length(calibs[[i]][,1]), its, prob=calibs[[i]][,2], TRUE),]
-    smp
+.smpl <- function(its, depths, calibs, Est) {
+  smp <- array(1, dim=c(length(depths), 1+its, 2))
+  smp[,1,1] <- Est
+  for(i in 1:length(calibs)) {
+    thiscalib <- as.matrix(calibs[[i]], ncol=2) 
+    sampled <- sample(1:nrow(thiscalib), its, prob=thiscalib[,2], TRUE)
+    smp[i,(1:its)+1,] <- thiscalib[sampled,]
   }
+  smp
+}
 
 # akin to Heegaard et al.'s mixed effect modelling, but using calibrated dates
 .mixed.effect <- function(its, depths, cals, cages, errors, calibs, Est, theta, f.mu, f.sigma, yrsteps, calibt)
@@ -81,7 +82,8 @@
     if(length(smooth)==0)
       cat(" Using linear regression, sampling") else
       cat(paste(" Using polynomial regression (degree ", smooth, "), sampling", sep=""))
-    if(wghts==0) w <- c() else w <- 1/errors^2
+  #	if(wghts==0) w <- c() else w <- 1/errors^2 
+	if(wghts==0) w <- NULL else w <- 1/errors^2
     for(i in 1:its)
       {
         if(wghts==1) w <- smp[,i,2]
@@ -111,7 +113,8 @@
   {
     if(length(smooth) < 1) smooth <- .3
     cat(paste(" Using smoothing spline (smoothing ", smooth, "), sampling", sep=""))
-    if(wghts==0) w <- c() else w <- 1/errors^2
+    #if(wghts==0) w <- c() else w <- 1/errors^2
+    if(wghts==0) w <- NULL else w <- 1/errors^2
     for(i in 1:its)
       {
         if(wghts==1) w <- smp[,i,2]
@@ -127,7 +130,8 @@
   {
     if(length(smooth) < 1) smooth <- .75
     cat(paste(" Using loess (smoothing ", smooth, "), sampling", sep=""))
-    if(wghts==0) w <- c() else w <- 1/errors^2
+    #if(wghts==0) w <- c() else w <- 1/errors^2
+    if(wghts==0) w <- NULL else w <- 1/errors^2
     for(i in 1:its)
       {
         if(wghts==1) w <- smp[,i,2]
@@ -140,7 +144,7 @@
 # calculate goodness-of-fit (small number, so calculate its -log)
 .gfit <- function(theta, f.mu, f.sigma, dat, calrange, outliers)
   {
-    gfit <- c()
+   # gfit <- c()
     if(length(outliers) > 0)
       {
         dat$cage <- dat$cage[-outliers]

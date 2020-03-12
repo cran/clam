@@ -78,7 +78,7 @@
 #' for red, green and blue, respectively, followed by a value for the semi-transparency (also between 0 and 1). Some graphic devices 
 #' such as postscript are unable to use transparency; in that case provide different colours or leave the fourth value empty.
 #' @param cage Mean of the uncalibrated C-14 age.
-#' @param error	Error of the uncalibrated C-14 age.
+#' @param error Error of the uncalibrated C-14 age.
 #' @param reservoir Reservoir age, or reservoir age and age offset.
 #' @param prob Probability confidence intervals (between 0 and 1).
 #' @param cc Calibration curve for C-14 dates (1, 2, 3, or 4).
@@ -97,7 +97,7 @@
 #' @param yrsteps Temporal resolution at which C-14 ages are calibrated (in calendar years).
 #' @param pbsteps Temporal resolution at which postbomb C-14 ages are calibrated (in calendar years).
 #' @param hpdsteps Temporal resolution at which highest posterior density ranges are calibrated (in calendar years).
-#' @param calibt Off by default; provide two parameters such as c(3,4).
+#' @param calibt Calibration based on the student-t distribution. By default, the Gaussian distribution is used (\code{calibt=FALSE}). To use the student-t distribution, provide two parameters such as \code{calibt=c(3,4)}.
 #' @param yrmin Minimum of calendar axis (default calculated automatically).
 #' @param yrmax Maximum of calendar axis (default calculated automatically).
 #' @param minC14 Minimum age of the C-14 age axis (default calculated automatically).
@@ -106,10 +106,10 @@
 #' @param calheight Maximum height of the C14 and calibrated distributions (as proportion of the invisible secondary axes).
 #' @param expand By which ratio should the calendar axis be expanded to fit the calibrated distribution.
 #' @param threshold Below which value should probabilities be excluded from calculations.
-#' @param graph	Plot a graph of the calibrated date. If set to FALSE, only the hpd ranges will be given.
+#' @param graph Plot a graph of the calibrated date. If set to FALSE, only the hpd ranges will be given.
 #' @param storedat Store the dates within the R session after a clam run.
-#' @param xlab Alternative names can be provided.
-#' @param ylab Alternative names can be provided.
+#' @param xlab Label of the horizontal axis. Defaults to the calendar scale, but alternative names can be provided.
+#' @param ylab Label of the vertical axis. Defaults to the 14C scale, but alternative names can be provided.
 #' @param BCAD Use BC/AD or cal BP scale (default cal BP).
 #' @param mar Plot margins (amount of white space along edges of axes 1-4).
 #' @param mgp Axis text margins (where should titles, labels and tick marks be plotted).
@@ -132,7 +132,7 @@
 #' calibrate(cage=130, error=20)
 #' calibrate(130, 20, reservoir=c(100, 50))
 #' @export
-calibrate <- function(cage=2450, error=50, reservoir=0, prob=0.95, cc=1, cc1="IntCal13.14C", cc2="Marine13.14C", cc3="SHCal13.14C", cc4="mixed.14C", ccdir="", postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C", pb5="postbomb_SH3.14C", yrsteps=1, pbsteps=0.01, hpdsteps=1, calibt=FALSE, yrmin=c(), yrmax=c(), minC14=c(), maxC14=c(), times=5, calheight=0.3, expand=0.1, threshold=1e-6, storedat=FALSE, graph=TRUE, xlab=c(), ylab=c(), BCAD=FALSE, mar=c(3.5,3,2,1), mgp=c(1.7,.8,0), bty="l", xaxs="i", yaxs="i", title=c(), date.col="red", cc.col=rgb(0,.5,0,0.7), dist.col=rgb(0,0,0,0.3), sd.col=rgb(0,0,0,0.5)) {
+calibrate <- function(cage=2450, error=50, reservoir=0, prob=0.95, cc=1, cc1="IntCal13.14C", cc2="Marine13.14C", cc3="SHCal13.14C", cc4="mixed.14C", ccdir="", postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C", pb5="postbomb_SH3.14C", yrsteps=1, pbsteps=0.01, hpdsteps=1, calibt=FALSE, yrmin=NULL, yrmax=NULL, minC14=NULL, maxC14=NULL, times=5, calheight=0.3, expand=0.1, threshold=1e-6, storedat=FALSE, graph=TRUE, xlab=NULL, ylab=NULL, BCAD=FALSE, mar=c(3.5,3,2,1), mgp=c(1.7,.8,0), bty="l", xaxs="i", yaxs="i", title=NULL, date.col="red", cc.col=rgb(0,.5,0,0.7), dist.col=rgb(0,0,0,0.3), sd.col=rgb(0,0,0,0.5)) {
   # set the calibration curve
   ccdir <- .validateDirectoryName(ccdir)
   if(ccdir == "")
@@ -435,7 +435,7 @@ age.pMC <- function(mn, sdev, ratio=100, decimals=3) {
 #' student.t() 
 #' 
 #' @export
-student.t <- function(y=2450, error=50, t.a=3, t.b=4, cc=1,  postbomb=c(), cc1="IntCal13", cc2="Marine13", cc3="SHCal13", cc4="mixed", ccdir="",Cutoff=1e-5, times=8)
+student.t <- function(y=2450, error=50, t.a=3, t.b=4, cc=1, postbomb=NULL, cc1="IntCal13", cc2="Marine13", cc3="SHCal13", cc4="mixed", ccdir="",Cutoff=1e-5, times=8)
 {
   ccdir <-.validateDirectoryName(ccdir)
   # set the calibration curve
@@ -623,7 +623,8 @@ calBP.14C <- function(yr, cc=1, cc1="IntCal13.14C", cc2="Marine13.14C", cc3="SHC
         {
           dif <- c(dat[1,1], sort(c(dat[dif,1], dat[dif+1,1])), dat[nrow(dat),1])
           dif <- matrix(dif, ncol=2, byrow=TRUE)
-          probs <- c()
+          #probs <- c()
+          probs <- numeric(nrow(dif))
           for(i in 1:nrow(dif))
             probs[i] <- round(100*sum(dat[which(dat[,1]==dif[i,1]):which(dat[,1]==dif[i,2]),2]), 1)
           hpds <- cbind(dif, probs)
