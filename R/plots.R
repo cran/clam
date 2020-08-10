@@ -115,7 +115,7 @@
   #' @param mn Reported mean of the date. Can be multiple dates. 
   #' @param sdev Reported error of the date. Can be multiple dates. 
   #' @param depth Depth of the date. 
-  #' @param cc The calibration curve to use: \code{cc=1} for IntCal13 (northern hemisphere terrestrial), \code{cc=2} for Marine13 (marine), \code{cc=0} for none (dates that are already on the cal BP scale).
+  #' @param cc The calibration curve to use: \code{cc=1} for IntCal20 (northern hemisphere terrestrial), \code{cc=2} for Marine20 (marine), \code{cc=3} for SHcal20 (southern hemisphere terrestrial), \code{cc=0} for none (dates that are already on the cal BP scale).
   #' @param above Threshold for plotting of probability values. Defaults to \code{above=1e-3}.
   #' @param exx Exaggeration of probability distribution plots. Defaults to \code{exx=50}.
   #' @param normal By default, Bacon uses the student's t-distribution to treat the dates. Use \code{normal=TRUE} to use the normal/Gaussian distribution. This will generally give higher weight to the dates.

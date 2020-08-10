@@ -24,8 +24,8 @@
 #' standard deviations or 99.999999 \% of its probability distribution). This range can also be adapted by 
 #' changing the option expand (default \code{expand=0.1}). Probabilities below a threshold (default \code{threshold=1e-6}) will be neglected.
 #' 
-#' By default the northern hemisphere terrestrial calibration curve is used (\code{cc=1, cc1="IntCal13.14C"}). 
-#' To use alternative curves, use \code{cc=2} (\code{cc2="Marine13.14C"}), \code{cc=3} (\code{cc3="SHCal13.14C"}), 
+#' By default the northern hemisphere terrestrial calibration curve is used (\code{cc=1, cc1="IntCal20.14C"}). 
+#' To use alternative curves, use \code{cc=2} (\code{cc2="Marine20.14C"}), \code{cc=3} (\code{cc3="SHCal20.14C"}), 
 #' \code{cc=4} (\code{cc4="mixed.14C"}), or change the file names of \code{cc1, cc2, cc3 or cc4}.
 #'  
 #' Clam works in cal BP (calendar years before AD 1950) by default, but can work with cal BC/AD through the option \code{BCAD=TRUE}. 
@@ -130,9 +130,9 @@
 #' cal; plot(cal$calib)
 #' calibrate(130, 20, prob=0.68)
 #' calibrate(cage=130, error=20)
-#' calibrate(130, 20, reservoir=c(100, 50))
+#' calibrate(4450, 40, reservoir=c(100, 50))
 #' @export
-calibrate <- function(cage=2450, error=50, reservoir=0, prob=0.95, cc=1, cc1="IntCal13.14C", cc2="Marine13.14C", cc3="SHCal13.14C", cc4="mixed.14C", ccdir="", postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C", pb5="postbomb_SH3.14C", yrsteps=1, pbsteps=0.01, hpdsteps=1, calibt=FALSE, yrmin=NULL, yrmax=NULL, minC14=NULL, maxC14=NULL, times=5, calheight=0.3, expand=0.1, threshold=1e-6, storedat=FALSE, graph=TRUE, xlab=NULL, ylab=NULL, BCAD=FALSE, mar=c(3.5,3,2,1), mgp=c(1.7,.8,0), bty="l", xaxs="i", yaxs="i", title=NULL, date.col="red", cc.col=rgb(0,.5,0,0.7), dist.col=rgb(0,0,0,0.3), sd.col=rgb(0,0,0,0.5)) {
+calibrate <- function(cage=2450, error=50, reservoir=0, prob=0.95, cc=1, cc1="IntCal20.14C", cc2="Marine20.14C", cc3="SHCal20.14C", cc4="mixed.14C", ccdir="", postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C", pb5="postbomb_SH3.14C", yrsteps=1, pbsteps=0.01, hpdsteps=1, calibt=FALSE, yrmin=NULL, yrmax=NULL, minC14=NULL, maxC14=NULL, times=5, calheight=0.3, expand=0.1, threshold=1e-6, storedat=FALSE, graph=TRUE, xlab=NULL, ylab=NULL, BCAD=FALSE, mar=c(3.5,3,2,1), mgp=c(1.7,.8,0), bty="l", xaxs="i", yaxs="i", title=NULL, date.col="red", cc.col=rgb(0,.5,0,0.7), dist.col=rgb(0,0,0,0.3), sd.col=rgb(0,0,0,0.5)) {
   # set the calibration curve
   ccdir <- .validateDirectoryName(ccdir)
   if(ccdir == "")
@@ -300,12 +300,12 @@ calibrate <- function(cage=2450, error=50, reservoir=0, prob=0.95, cc=1, cc1="In
 #' @description Copy one of the the calibration curves into memory. 
 #' @details Copy the radiocarbon calibration curve defined by cc into memory. 
 #' @return The calibration curve (invisible).
-#' @param cc Calibration curve for 14C dates: \code{cc=1} for IntCal13 (northern hemisphere terrestrial), \code{cc=2} for Marine13 (marine), 
-#' \code{cc=3} for SHCal13 (southern hemisphere terrestrial). 
+#' @param cc Calibration curve for 14C dates: \code{cc=1} for IntCal20 (northern hemisphere terrestrial), \code{cc=2} for Marine20 (marine), 
+#' \code{cc=3} for SHCal20 (southern hemisphere terrestrial). 
 #' @param postbomb Use \code{postbomb=TRUE} to get a postbomb calibration curve (default \code{postbbomb=FALSE}).
 #' @author Maarten Blaauw, J. Andres Christen
 #' @examples 
-#' intcal13 <- copyCalibrationCurve(1)
+#' intcal20 <- copyCalibrationCurve(1)
 #' @export
 copyCalibrationCurve <- function(cc=1, postbomb=FALSE) {
   if(postbomb) {
@@ -316,9 +316,9 @@ copyCalibrationCurve <- function(cc=1, postbomb=FALSE) {
             if(cc==5) fl <- "postbomb_SH3.14C" else  
               stop("Calibration curve doesn't exist\n")		       
   } else
-  if(cc==1) fl <- "IntCal13.14C" else
-    if(cc==2) fl <- "Marine13.14C" else
-      if(cc==3) fl <- "SHCal13.14C" else
+  if(cc==1) fl <- "IntCal20.14C" else
+    if(cc==2) fl <- "Marine20.14C" else
+      if(cc==3) fl <- "SHCal20.14C" else
         stop("Calibration curve doesn't exist\n") 		 
   cc <- system.file("extdata", fl, package='clam')
   cc <- read.table(cc)
@@ -333,8 +333,8 @@ copyCalibrationCurve <- function(cc=1, postbomb=FALSE) {
 #' @details The proportional contribution of each of both calibration curves has to be set. 
 #'
 #' @param proportion Proportion of the first calibration curve required. e.g., change to \code{proportion=0.7} if \code{cc1} should contribute 70\% (and \code{cc2} 30\%) to the mixed curve.
-#' @param cc1 The first calibration curve to be mixed. Defaults to the northern hemisphere terrestrial curve IntCal13.
-#' @param cc2 The second calibration curve to be mixed. Defaults to the marine curve IntCal13.
+#' @param cc1 The first calibration curve to be mixed. Defaults to the northern hemisphere terrestrial curve IntCal20.
+#' @param cc2 The second calibration curve to be mixed. Defaults to the marine curve Marine20.
 #' @param name Name of the new calibration curve.
 #' @param dirname Directory where the file will be written. If using the default \code{dirname="."}, 
 #' the new curve will be saved in current working directory. 
@@ -345,7 +345,7 @@ copyCalibrationCurve <- function(cc=1, postbomb=FALSE) {
 #' @examples
 #'   mix.calibrationcurves(dirname=tempdir())
 #' @export
-mix.calibrationcurves <- function(proportion=.5, cc1="IntCal13.14C", cc2="Marine13.14C", name="mixed.14C", dirname=".", offset=c(0,0), sep="\t") {
+mix.calibrationcurves <- function(proportion=.5, cc1="IntCal20.14C", cc2="Marine20.14C", name="mixed.14C", dirname=".", offset=c(0,0), sep="\t") {
   ccloc <- normalizePath(system.file("extdata/", package='clam')) 
   dirname <- .validateDirectoryName(dirname)
   
@@ -435,7 +435,7 @@ age.pMC <- function(mn, sdev, ratio=100, decimals=3) {
 #' student.t() 
 #' 
 #' @export
-student.t <- function(y=2450, error=50, t.a=3, t.b=4, cc=1, postbomb=NULL, cc1="IntCal13", cc2="Marine13", cc3="SHCal13", cc4="mixed", ccdir="",Cutoff=1e-5, times=8)
+student.t <- function(y=2450, error=50, t.a=3, t.b=4, cc=1, postbomb=NULL, cc1="IntCal20", cc2="Marine20", cc3="SHCal20", cc4="mixed", ccdir="",Cutoff=1e-5, times=8)
 {
   ccdir <-.validateDirectoryName(ccdir)
   # set the calibration curve
@@ -458,11 +458,11 @@ student.t <- function(y=2450, error=50, t.a=3, t.b=4, cc=1, postbomb=NULL, cc1="
   } else
   {
     
-    if(cc1=="IntCal13") cc1 <- read.table(paste(ccdir, "IntCal13.14C",  sep="")) else
+    if(cc1=="IntCal20") cc1 <- read.table(paste(ccdir, "IntCal20.14C",  sep="")) else
       cc1 <- read.csv(paste(ccdir, cc1,  sep=""))[,1:3]
-    if(cc2=="Marine13") cc2 <- read.table(paste(ccdir, "Marine13.14C",  sep="")) else
+    if(cc2=="Marine20") cc2 <- read.table(paste(ccdir, "Marine20.14C",  sep="")) else
       cc2 <- read.csv(paste(ccdir, cc2,  sep=""))[,1:3]
-    if(cc3=="SHCal13") cc3 <- read.table(paste(ccdir, "SHCal13.14C",  sep="")) else
+    if(cc3=="SHCal20") cc3 <- read.table(paste(ccdir, "SHCal20.14C",  sep="")) else
       cc3 <- read.table(paste(ccdir, cc3,  sep=""))[,1:3]
     if(cc4=="mixed") cc4 <- read.table(paste(ccdir, "mixed.14C",  sep="")) else
       cc4 <- read.table(paste(ccdir, cc4,  sep=""))[,1:3]
@@ -538,7 +538,7 @@ student.t <- function(y=2450, error=50, t.a=3, t.b=4, cc=1, postbomb=NULL, cc1="
 #' calBP.14C(100) 
 #' 
 #' @export
-calBP.14C <- function(yr, cc=1, cc1="IntCal13.14C", cc2="Marine13.14C", cc3="SHCal13.14C", cc4="mixed.14C", ccdir="", postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C", pb5="postbomb_SH3.14C") {
+calBP.14C <- function(yr, cc=1, cc1="IntCal20.14C", cc2="Marine20.14C", cc3="SHCal20.14C", cc4="mixed.14C", ccdir="", postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C", pb5="postbomb_SH3.14C") {
   # set the calibration curve
   ccdir <- .validateDirectoryName(ccdir)
   if(ccdir == "")

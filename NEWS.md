@@ -1,6 +1,9 @@
+# clam 2.3.5
+* updated to the latest IntCal20 calibration curves
+
 # clam 2.3.4
 
-* updated the code to deal with changes in how base-R deals with c() in loops
+* Updated the code to deal with changes in how base-R deals with c() in loops, as suggested by Martin Maechler's e-mail 29 February 2020
 
 # clam 2.3.3
 

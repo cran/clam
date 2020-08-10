@@ -47,8 +47,8 @@ NULL
 #'
 #' Age-models for the core can then be produced by typing, e.g., \code{clam("MyCore1")}.
 #'
-#' By default the northern hemisphere terrestrial calibration curve is used (\code{cc=1}, \code{cc1="IntCal13.14C"}). 
-#' To use alternative curves, change \code{cc} to \code{cc=2 (cc2="Marine13.14C")}, \code{cc=3 (cc3="SHCal13.14C")}, \code{cc=4 (cc4="mixed.14C")}. 
+#' By default the northern hemisphere terrestrial calibration curve is used (\code{cc=1}, \code{cc1="IntCal20.14C"}). 
+#' To use alternative curves, change \code{cc} to \code{cc=2 (cc2="Marine20.14C")}, \code{cc=3 (cc3="SHCal20.14C")}, \code{cc=4 (cc4="mixed.14C")}. 
 #' You can also provide custom-built calibration curves, indicating its location using \code{ccdir}.
 #'
 #' The provided example (default \code{core="Example"}) is core Quilichao-1 which was sampled from a Colombian lake (Berrio et al., 2002). 
@@ -63,7 +63,7 @@ NULL
 #' then a "best" estimate, and finally the reconstructed accumulation rates. The reported values are rounded to 0 decimals by default
 #' (\code{decimals=0}). Accumulation rates are in yr/cm ("deposition time") by default (\code{cmyr=FALSE}), but can be reported in cm/yr (\code{cmyr=TRUE}).
 #'
-#' see accompanying webpage \url{http://www.chrono.qub.ac.uk/blaauw/clam.html} and Blaauw 2010 (Quaternary Geochronology 5: 512-518).
+#' see accompanying webpage \url{http://www.qub.ac.uk/chrono/blaauw/clam.html} and Blaauw 2010 (Quaternary Geochronology 5: 512-518).
 #'
 #' @param core Name of the core, given using quotes. Defaults to the core provided with clam, \code{core="Example"}.
 #' @param type The type of age-depth model. Five different types are provided:
@@ -178,7 +178,7 @@ NULL
 #' @examples 
 #'  clam(, coredir=tempdir()) # Create the example in Cores/Example folder
 #'  clam(, coredir=tempdir(), extradates=470) 
-#' @seealso \url{http://www.chrono.qub.ac.uk/blaauw/clam.html}
+#' @seealso \url{http://www.qub.ac.uk/chrono/blaauw/clam.html}
 #' \link{calibrate}
 #' \link{mix.calibrationcurves}
 #' \link{pMC.age}
@@ -195,7 +195,7 @@ NULL
 #' Blaauw, M., 2010. Methods and code for 'classical' age-modelling of radiocarbon sequences. Quaternary Geochronology 5, 512-518
 #' \url{http://dx.doi.org/10.1016/j.quageo.2010.01.002}
 #' @export
-clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, coredir=NULL, ask=TRUE, wghts=1, cc=1, cc1="IntCal13.14C", cc2="Marine13.14C", cc3="SHCal13.14C", cc4="mixed.14C",  postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C",pb5="postbomb_SH3.14C", ccdir="", outliers=NULL, ignore=NULL, youngest=NULL, extradates=NULL, slump=NULL, est=1, calibt=FALSE, mixed.effect=FALSE, dmin=NULL, dmax=NULL, every=1, yrmin=NULL, yrmax=NULL, yrsteps=1, pbsteps=0.01, hpdsteps=1, BCAD=FALSE, decimals=0, cmyr=FALSE, ageofdepth=NULL, depth="cm", depthseq=NULL, depths.file=FALSE, thickness=1, hiatus=NULL, remove.reverse=0.5, times=5, sep=",", ext=".csv", runname=NULL, storedat=TRUE, threshold=1e-6, proxies=FALSE, revaxes=FALSE, revd=TRUE, revyr=TRUE, calhght=0.3, maxhght=0.01, mirror=TRUE, plotrange=TRUE, bty="l", mar=c(3.5,3,2,1), mgp=c(2,1,0), plotpdf=TRUE, plotpng=TRUE, greyscale=NULL, yrlab=NULL, dlab=NULL, calcol=rgb(0,0.5,0.5,0.5), C14col=rgb(0,0,1,0.5), outcol="red", outlsize=1, bestcol="black", rangecol=rgb(0,0,0,0.3), slumpcol=grey(0.75), plotname=TRUE, ash=FALSE) {
+clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, coredir=NULL, ask=TRUE, wghts=1, cc=1, cc1="IntCal20.14C", cc2="Marine20.14C", cc3="SHCal20.14C", cc4="mixed.14C",  postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C",pb5="postbomb_SH3.14C", ccdir="", outliers=NULL, ignore=NULL, youngest=NULL, extradates=NULL, slump=NULL, est=1, calibt=FALSE, mixed.effect=FALSE, dmin=NULL, dmax=NULL, every=1, yrmin=NULL, yrmax=NULL, yrsteps=1, pbsteps=0.01, hpdsteps=1, BCAD=FALSE, decimals=0, cmyr=FALSE, ageofdepth=NULL, depth="cm", depthseq=NULL, depths.file=FALSE, thickness=1, hiatus=NULL, remove.reverse=0.5, times=5, sep=",", ext=".csv", runname=NULL, storedat=TRUE, threshold=1e-6, proxies=FALSE, revaxes=FALSE, revd=TRUE, revyr=TRUE, calhght=0.3, maxhght=0.01, mirror=TRUE, plotrange=TRUE, bty="l", mar=c(3.5,3,2,1), mgp=c(2,1,0), plotpdf=TRUE, plotpng=TRUE, greyscale=NULL, yrlab=NULL, dlab=NULL, calcol=rgb(0,0.5,0.5,0.5), C14col=rgb(0,0,1,0.5), outcol="red", outlsize=1, bestcol="black", rangecol=rgb(0,0,0,0.3), slumpcol=grey(0.75), plotname=TRUE, ash=FALSE) {
   # If coredir is left empty, check for a folder named Cores in the current working directory, and if this doesn't exist, for a folder called clam_runs (make this folder if it doesn't exist yet).
   # Check if we have write access. If not, tell the user to provide a different, writeable location for coredir. 
 
