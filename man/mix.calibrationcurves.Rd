@@ -6,12 +6,13 @@
 \usage{
 mix.calibrationcurves(
   proportion = 0.5,
-  cc1 = "IntCal20.14C",
-  cc2 = "Marine20.14C",
+  cc1 = "3Col_intcal20.14C",
+  cc2 = "3Col_marine20.14C",
   name = "mixed.14C",
   dirname = ".",
   offset = c(0, 0),
-  sep = "\\t"
+  sep = "\\t",
+  rule = 1
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ the new curve will be saved in current working directory.}
 \item{offset}{Any offset and error to be applied to \code{cc2} (default 0 +- 0).}
 
 \item{sep}{Separator between fields (tab by default, "\\t")}
+
+\item{rule}{How should R's approx function deal with extrapolation. If \code{rule=1}, the default, then NAs are returned for such points and if it is 2, the value at the closest data extreme is used.}
 }
 \value{
 A file containing the custom-made calibration curve, based on calibration curves \code{cc1} and \code{cc2}.

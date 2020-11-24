@@ -10,9 +10,9 @@ calibrate(
   reservoir = 0,
   prob = 0.95,
   cc = 1,
-  cc1 = "IntCal20.14C",
-  cc2 = "Marine20.14C",
-  cc3 = "SHCal20.14C",
+  cc1 = "3Col_intcal20.14C",
+  cc2 = "3Col_marine20.14C",
+  cc3 = "3Col_shcal20.14C",
   cc4 = "mixed.14C",
   ccdir = "",
   postbomb = FALSE,
@@ -47,7 +47,8 @@ calibrate(
   date.col = "red",
   cc.col = rgb(0, 0.5, 0, 0.7),
   dist.col = rgb(0, 0, 0, 0.3),
-  sd.col = rgb(0, 0, 0, 0.5)
+  sd.col = rgb(0, 0, 0, 0.5),
+  rule = 1
 )
 }
 \arguments{
@@ -137,6 +138,8 @@ Use \code{ccdir="."} to choose current working directory. Use \code{ccdir="/Curv
 \item{dist.col}{Colour of the calibrated distribution.}
 
 \item{sd.col}{Colour of calibrated range.}
+
+\item{rule}{How should R's approx function deal with extrapolation. If \code{rule=1}, the default, then NAs are returned for such points and if it is 2, the value at the closest data extreme is used.}
 }
 \value{
 A graph of the raw and calibrated C-14 date, the calibrated ranges and, invisibly, the calibrated ranges and probabilities.
@@ -157,7 +160,7 @@ In case the date has a reservoir effect or age offset, e.g. of 100 14C years, pr
 e.g., for an uncertainty of 50yr, \code{calibrate(130,20,reservoir=c(100, 50))}. 
 The uncertainty for the age offset will then be added to the error (by taking the square root of the sum 
 of the squared error and the squared offset uncertainty). If the carbon of your sample has mixed marine/terrestrial sources,
-instead apply the marine offset using \code{mix.calibrationcurves} \link{mix.calibrationcurves}, and calibrate the date using that custom-built curve.
+instead apply the marine offset using mix.calibrationcurves mix.calibrationcurves, and calibrate the date using that custom-built curve.
 
 If you prefer to work with, e.g., 68 \% as opposed to the default 95 \% confidence intervals, 
 type: \code{calibrate(130, 20, prob=0.68)} or \code{calibrate(130, 20,, 0.68)} (the commas between the brackets indicate the position of the option;
@@ -166,8 +169,8 @@ for every single calendar year (\code{yrsteps=1}) within a wide range of the 14C
 standard deviations or 99.999999 \% of its probability distribution). This range can also be adapted by 
 changing the option expand (default \code{expand=0.1}). Probabilities below a threshold (default \code{threshold=1e-6}) will be neglected.
 
-By default the northern hemisphere terrestrial calibration curve is used (\code{cc=1, cc1="IntCal20.14C"}). 
-To use alternative curves, use \code{cc=2} (\code{cc2="Marine20.14C"}), \code{cc=3} (\code{cc3="SHCal20.14C"}), 
+By default the northern hemisphere terrestrial calibration curve is used (\code{cc=1, cc1="3Col_intcal20.14C"}). 
+To use alternative curves, use \code{cc=2} (\code{cc2="3Col_marine20.14C"}), \code{cc=3} (\code{cc3="3Col_shcal20.14C"}), 
 \code{cc=4} (\code{cc4="mixed.14C"}), or change the file names of \code{cc1, cc2, cc3 or cc4}.
  
 Clam works in cal BP (calendar years before AD 1950) by default, but can work with cal BC/AD through the option \code{BCAD=TRUE}. 

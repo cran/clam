@@ -1,20 +1,22 @@
 
 #' clam
 #' 
-#' clam is R code for classical (non-Bayesian) age-depth modelling.
+#' Classical (non-Bayesian) age-depth modelling.
 #' 
 #' @docType package
 #' @author Maarten Blaauw <maarten.blaauw@qub.ac.uk>
 #' @importFrom grDevices dev.off grey rgb pdf png
-#' @importFrom graphics abline image layout legend lines par plot points polygon rect
+#' @importFrom graphics abline image layout legend lines par points polygon rect plot
 #' @importFrom stats approx density dnorm lm loess pnorm predict qnorm quantile rnorm runif smooth.spline spline weighted.mean
 #' @importFrom utils read.csv read.table write.table packageName
+#' @importFrom IntCal copyCalibrationCurve mix.curves pMC.age age.pMC
 #' @name clam
 NULL  
 
-# done: 
+# done: repaired bug with Est not being the same size as smp (e.g., whenever dates were truncated or removed, either automatically or manually), repaired mixed.effect (does not use student.t any more)
 
-# do: 
+# so that functions such as pMC.age etc. are available immediately
+library(IntCal)
 
 #' @name clam
 #' @title The main age-depth modelling function
@@ -47,8 +49,8 @@ NULL
 #'
 #' Age-models for the core can then be produced by typing, e.g., \code{clam("MyCore1")}.
 #'
-#' By default the northern hemisphere terrestrial calibration curve is used (\code{cc=1}, \code{cc1="IntCal20.14C"}). 
-#' To use alternative curves, change \code{cc} to \code{cc=2 (cc2="Marine20.14C")}, \code{cc=3 (cc3="SHCal20.14C")}, \code{cc=4 (cc4="mixed.14C")}. 
+#' By default the northern hemisphere terrestrial calibration curve is used (\code{cc=1}, \code{cc1="3Col_intcal20.14C"}). 
+#' To use alternative curves, change \code{cc} to \code{cc=2 (cc2="3Col_marine20.14C")}, \code{cc=3 (cc3="3Col_shcal20.14C")}, \code{cc=4 (cc4="mixed.14C")}. 
 #' You can also provide custom-built calibration curves, indicating its location using \code{ccdir}.
 #'
 #' The provided example (default \code{core="Example"}) is core Quilichao-1 which was sampled from a Colombian lake (Berrio et al., 2002). 
@@ -63,7 +65,7 @@ NULL
 #' then a "best" estimate, and finally the reconstructed accumulation rates. The reported values are rounded to 0 decimals by default
 #' (\code{decimals=0}). Accumulation rates are in yr/cm ("deposition time") by default (\code{cmyr=FALSE}), but can be reported in cm/yr (\code{cmyr=TRUE}).
 #'
-#' see accompanying webpage \url{http://www.qub.ac.uk/chrono/blaauw/clam.html} and Blaauw 2010 (Quaternary Geochronology 5: 512-518).
+#' see Blaauw 2010 (Quaternary Geochronology 5: 512-518).
 #'
 #' @param core Name of the core, given using quotes. Defaults to the core provided with clam, \code{core="Example"}.
 #' @param type The type of age-depth model. Five different types are provided:
@@ -172,21 +174,13 @@ NULL
 #' @param slumpcol Colour of slump.
 #' @param plotname Print the core name on the graph.
 #' @param ash Plot all distributions at the same height.
+#' @param rule How should R's approx function deal with extrapolation. If \code{rule=1}, the default, then NAs are returned for such points and if it is 2, the value at the closest data extreme is used.
 #' 
 #' @author Maarten Blaauw
 #' @return Age model construction together with a text output and files saved to a folder in the \code{coredir/core} directory.
 #' @examples 
 #'  clam(, coredir=tempdir()) # Create the example in Cores/Example folder
 #'  clam(, coredir=tempdir(), extradates=470) 
-#' @seealso \url{http://www.qub.ac.uk/chrono/blaauw/clam.html}
-#' \link{calibrate}
-#' \link{mix.calibrationcurves}
-#' \link{pMC.age}
-#' \link{age.pMC}
-#' \link{student.t}
-#' \link{deptime.depth}
-#' \link{deptime.age}
-#' \link{plot_proxies}
 #' 
 #' @references
 #' Berrio, J.C., Hooghiemstra, H., Marchant, R., Rangel, O., 2002. Late-glacial and Holocene history of the dry forest area 
@@ -195,7 +189,7 @@ NULL
 #' Blaauw, M., 2010. Methods and code for 'classical' age-modelling of radiocarbon sequences. Quaternary Geochronology 5, 512-518
 #' \url{http://dx.doi.org/10.1016/j.quageo.2010.01.002}
 #' @export
-clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, coredir=NULL, ask=TRUE, wghts=1, cc=1, cc1="IntCal20.14C", cc2="Marine20.14C", cc3="SHCal20.14C", cc4="mixed.14C",  postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C",pb5="postbomb_SH3.14C", ccdir="", outliers=NULL, ignore=NULL, youngest=NULL, extradates=NULL, slump=NULL, est=1, calibt=FALSE, mixed.effect=FALSE, dmin=NULL, dmax=NULL, every=1, yrmin=NULL, yrmax=NULL, yrsteps=1, pbsteps=0.01, hpdsteps=1, BCAD=FALSE, decimals=0, cmyr=FALSE, ageofdepth=NULL, depth="cm", depthseq=NULL, depths.file=FALSE, thickness=1, hiatus=NULL, remove.reverse=0.5, times=5, sep=",", ext=".csv", runname=NULL, storedat=TRUE, threshold=1e-6, proxies=FALSE, revaxes=FALSE, revd=TRUE, revyr=TRUE, calhght=0.3, maxhght=0.01, mirror=TRUE, plotrange=TRUE, bty="l", mar=c(3.5,3,2,1), mgp=c(2,1,0), plotpdf=TRUE, plotpng=TRUE, greyscale=NULL, yrlab=NULL, dlab=NULL, calcol=rgb(0,0.5,0.5,0.5), C14col=rgb(0,0,1,0.5), outcol="red", outlsize=1, bestcol="black", rangecol=rgb(0,0,0,0.3), slumpcol=grey(0.75), plotname=TRUE, ash=FALSE) {
+clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, coredir=NULL, ask=TRUE, wghts=1, cc=1, cc1="3Col_intcal20.14C", cc2="3Col_marine20.14C", cc3="3Col_shcal20.14C", cc4="mixed.14C",  postbomb=FALSE, pb1="postbomb_NH1.14C", pb2="postbomb_NH2.14C", pb3="postbomb_NH3.14C", pb4="postbomb_SH1-2.14C",pb5="postbomb_SH3.14C", ccdir="", outliers=NULL, ignore=NULL, youngest=NULL, extradates=NULL, slump=NULL, est=1, calibt=FALSE, mixed.effect=FALSE, dmin=NULL, dmax=NULL, every=1, yrmin=NULL, yrmax=NULL, yrsteps=1, pbsteps=0.01, hpdsteps=1, BCAD=FALSE, decimals=0, cmyr=FALSE, ageofdepth=NULL, depth="cm", depthseq=NULL, depths.file=FALSE, thickness=1, hiatus=NULL, remove.reverse=0.5, times=5, sep=",", ext=".csv", runname=NULL, storedat=TRUE, threshold=1e-6, proxies=FALSE, revaxes=FALSE, revd=TRUE, revyr=TRUE, calhght=0.3, maxhght=0.01, mirror=TRUE, plotrange=TRUE, bty="l", mar=c(3.5,3,2,1), mgp=c(2,1,0), plotpdf=TRUE, plotpng=TRUE, greyscale=NULL, yrlab=NULL, dlab=NULL, calcol=rgb(0,0.5,0.5,0.5), C14col=rgb(0,0,1,0.5), outcol="red", outlsize=1, bestcol="black", rangecol=rgb(0,0,0,0.3), slumpcol=grey(0.75), plotname=TRUE, ash=FALSE, rule=1) {
   # If coredir is left empty, check for a folder named Cores in the current working directory, and if this doesn't exist, for a folder called clam_runs (make this folder if it doesn't exist yet).
   # Check if we have write access. If not, tell the user to provide a different, writeable location for coredir. 
 
@@ -205,10 +199,10 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
     fileCopy <- system.file("extdata/Example/", package="clam")
     file.copy(fileCopy, coredir, recursive = TRUE, overwrite=FALSE)
   } 
- 
+
   # set the calibration curve
   if(ccdir == "")
-    ccdir <- system.file("extdata", package=packageName()) 
+    ccdir <- system.file("extdata", package="IntCal") 
 
   # warn and stop if unexpected settings are provided
   if(type > 5 || type < 1 || prob < 0 || prob > 1 || its < 100 || wghts < 0 || wghts > 1 || est < 1 || est > 7 || yrsteps <= 0 || hpdsteps <= 0 || every <= 0 || decimals < 0 || cmyr < 0 || cmyr > 1 || thickness < 0 || times < 1 || calhght < 0 || (type==5 && length(hiatus)>0))
@@ -219,6 +213,7 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
     stop(paste("\nInput data file", csvFile, "not found.", sep=" "), call.=FALSE)
   dets <- read.csv(csvFile, sep=sep)
   d <- dets[,6]
+  these <- 1:length(d) # to possibly kick out dates later on; Nov 2020
   if(min(diff(d)) < 0)
     cat("\n Warning, depths not in ascending order (top ones should come first).\n\n")
 
@@ -226,19 +221,18 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
   Gates <- list.files(paste(coredir, core, sep=""), pattern=".csv.txt")
   if(length(Gates) > 0) {
     cat("\nRemoving unnecessary .txt extension from .csv file", Gates[1], "\n")
-    file.rename(paste(coredir, core, "/", core, ".csv.txt", sep=""),
-      paste(coredir, core, "/", core, ".csv", sep=""))
+    file.rename(paste0(coredir, core, "/", core, ".csv.txt"),
+      paste0(coredir, core, "/", core, ".csv"))
   }
 
   # set the calibration curve
   ccdir <- .validateDirectoryName(ccdir)
   if(ccdir == "") # so, if no alternative folder provided, use clam's calibration curves
-    ccdir = paste(system.file("extdata", package=packageName()), "/", sep="")
-    
-  if(cc==1) calcurve <- read.table(paste(ccdir, cc1,  sep="")) else
-    if(cc==2) calcurve <- read.table(paste(ccdir, cc2,  sep="")) else
-      if(cc==3) calcurve <- read.table(paste(ccdir, cc3,  sep="")) else
-        if(cc==4) calcurve <- read.table(paste(ccdir, cc4,  sep="")) else
+    ccdir = paste0(system.file("extdata", package="IntCal"), "/")
+  if(cc==1) calcurve <- read.table(paste0(ccdir, cc1)) else
+    if(cc==2) calcurve <- read.table(paste0(ccdir, cc2)) else
+      if(cc==3) calcurve <- read.table(paste0(ccdir, cc3)) else
+        if(cc==4) calcurve <- read.table(paste0(ccdir, cc4)) else
           stop("I do not understand which calibration curve you mean, check the manual", call.=FALSE)
   if(cc==1) ccname <- cc1 else
     if(cc==2) ccname <- cc2 else
@@ -255,7 +249,7 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
           if(postbomb>5)
             stop("I do not understand which postbomb curve you mean, check the manual", call.=FALSE)
           yrsteps <- min(pbsteps, yrsteps)
-          pb <- read.table(system.file("extdata", pbnames[postbomb], package=packageName()))
+          pb <- read.table(system.file("extdata", pbnames[postbomb], package="IntCal")) # now points to IntCal package
           pb.x <- seq(min(pb[,1]), max(pb[,1]), by=yrsteps)
           pb.y <- approx(pb[,1], pb[,2], pb.x)$y
           pb.sd <- approx(pb[,1], pb[,3], pb.x)$y
@@ -267,8 +261,8 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
     theta <- 1950-calcurve[,1]
     border <- max(which(theta > 0))
     theta <- c(theta[1:(border-1)], theta[border]:theta[border+2], theta[(border+3):length(theta)])
-    mu <- approx(1950-calcurve[,1], calcurve[,2], theta)$y
-    sigma <- approx(1950-calcurve[,1], calcurve[,3], theta)$y
+    mu <- approx(1950-calcurve[,1], calcurve[,2], theta, rule=rule)$y
+    sigma <- approx(1950-calcurve[,1], calcurve[,3], theta, rule=rule)$y
     theta[theta <=0] <- theta[theta <= 0]-1
     calcurve <- cbind(theta, mu, sigma)
   } else theta <- calcurve[,1]
@@ -300,9 +294,8 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
        hiatus <- hiatus[c(above.slump, below.slump)]
     }
   }
-
   # read in the data
-  dat <- .read.clam(core, coredir, ext, hpdsteps, yrsteps, prob, times, sep, BCAD, storedat, ignore, thickness, youngest, slump, threshold, theta, f.mu, f.sigma, calibt, extradates, calcurve, postbomb)
+  dat <- .read.clam(core, coredir, ext, hpdsteps, yrsteps, prob, times, sep, BCAD, storedat, ignore, thickness, youngest, slump, threshold, theta, f.mu, f.sigma, calibt, extradates, calcurve, postbomb, rule=rule)
   cat("\n Calibrating dates... ")
 
   # calculate the depths to be used, based on the ranges and resolution
@@ -341,9 +334,9 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
         if(any(type==c(4, "smooth", "sm"))) type <- 4 else
           if(any(type==c(5, "loess", "lowess"))) type <- 5
   best <- cbind(dat$mid1, dat$mid1, dat$mid1, dat$wmn, dat$med, dat$mode, dat$mid2)
-  Est <- best[,est]  
+  Est <- best[,est] 
 
-  # remove outliers from the age-depth modelling
+  # remove (manually chosen) outliers from the age-depth modelling
   if(length(outliers) > 0) {
     depths <- dat$depth[-outliers]
     errors <- dat$error[-outliers]
@@ -354,6 +347,7 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
       errors <- dat$error
       calibs <- dat$calib
     }
+	calibs <<- calibs # tmp
 
   # age-depth modelling with curves through sampled age estimates
   # in sections if one or more hiatuses are present
@@ -375,12 +369,13 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
     }
   calrange <- allrange[2:nrow(allrange),]
   } else {
-    if(mixed.effect)
+    if(mixed.effect) {
 	  if(length(outliers) > 0)
 	    smp <- .mixed.effect(its, depths, dat$cal[-outliers], dat$cage[-outliers], errors, calibs, est, theta, f.mu, f.sigma, yrsteps, calibt) else
-	      smp <- .mixed.effect(its, depths, dat$cal, dat$cage, errors, calibs, Est, theta, f.mu, f.sigma, yrsteps, calibt) else
-	        smp <- .smpl(its, depths, calibs, Est)
-     calrange <- .model.clam(type, smooth, its, wghts, depths, errors, depthseq, prob, est, dat, smp, greyscale, remove.reverse, storedat, ageofdepth, BCAD)
+	      smp <- .mixed.effect(its, depths, dat$cal, dat$cage, errors, calibs, Est, theta, f.mu, f.sigma, yrsteps, calibt) 
+	  } else
+		smp <- .smpl(its, depths, calibs, Est)
+    calrange <- .model.clam(type, smooth, its, wghts, depths, errors, depthseq, prob, est, dat, smp, greyscale, remove.reverse, storedat, ageofdepth, BCAD)
     }
   dat$model <- approx(calrange[,1], (calrange[,2]+calrange[,3])/2, dat$depth)$y
 

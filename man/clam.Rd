@@ -15,9 +15,9 @@ clam(
   ask = TRUE,
   wghts = 1,
   cc = 1,
-  cc1 = "IntCal20.14C",
-  cc2 = "Marine20.14C",
-  cc3 = "SHCal20.14C",
+  cc1 = "3Col_intcal20.14C",
+  cc2 = "3Col_marine20.14C",
+  cc3 = "3Col_shcal20.14C",
   cc4 = "mixed.14C",
   postbomb = FALSE,
   pb1 = "postbomb_NH1.14C",
@@ -82,7 +82,8 @@ clam(
   rangecol = rgb(0, 0, 0, 0.3),
   slumpcol = grey(0.75),
   plotname = TRUE,
-  ash = FALSE
+  ash = FALSE,
+  rule = 1
 )
 }
 \arguments{
@@ -269,12 +270,14 @@ and \code{"l"}, \code{"7"}, \code{"c"}, \code{"u"}, "]" or \code{"o"} for corres
 \item{plotname}{Print the core name on the graph.}
 
 \item{ash}{Plot all distributions at the same height.}
+
+\item{rule}{How should R's approx function deal with extrapolation. If \code{rule=1}, the default, then NAs are returned for such points and if it is 2, the value at the closest data extreme is used.}
 }
 \value{
 Age model construction together with a text output and files saved to a folder in the \code{coredir/core} directory.
 }
 \description{
-clam is R code for classical (non-Bayesian) age-depth modelling.
+Classical (non-Bayesian) age-depth modelling.
 
 Produce age-depth models for cores with dated depths.
 }
@@ -306,8 +309,8 @@ These files can be made in spreadsheet software such as MS-Excel, but it is alwa
 
 Age-models for the core can then be produced by typing, e.g., \code{clam("MyCore1")}.
 
-By default the northern hemisphere terrestrial calibration curve is used (\code{cc=1}, \code{cc1="IntCal20.14C"}). 
-To use alternative curves, change \code{cc} to \code{cc=2 (cc2="Marine20.14C")}, \code{cc=3 (cc3="SHCal20.14C")}, \code{cc=4 (cc4="mixed.14C")}. 
+By default the northern hemisphere terrestrial calibration curve is used (\code{cc=1}, \code{cc1="3Col_intcal20.14C"}). 
+To use alternative curves, change \code{cc} to \code{cc=2 (cc2="3Col_marine20.14C")}, \code{cc=3 (cc3="3Col_shcal20.14C")}, \code{cc=4 (cc4="mixed.14C")}. 
 You can also provide custom-built calibration curves, indicating its location using \code{ccdir}.
 
 The provided example (default \code{core="Example"}) is core Quilichao-1 which was sampled from a Colombian lake (Berrio et al., 2002). 
@@ -322,11 +325,12 @@ The file containing the age estimates has 5 columns; first the depths, then the 
 then a "best" estimate, and finally the reconstructed accumulation rates. The reported values are rounded to 0 decimals by default
 (\code{decimals=0}). Accumulation rates are in yr/cm ("deposition time") by default (\code{cmyr=FALSE}), but can be reported in cm/yr (\code{cmyr=TRUE}).
 
-see accompanying webpage \url{http://www.qub.ac.uk/chrono/blaauw/clam.html} and Blaauw 2010 (Quaternary Geochronology 5: 512-518).
+see Blaauw 2010 (Quaternary Geochronology 5: 512-518).
 }
 \examples{
  clam(, coredir=tempdir()) # Create the example in Cores/Example folder
  clam(, coredir=tempdir(), extradates=470) 
+
 }
 \references{
 Berrio, J.C., Hooghiemstra, H., Marchant, R., Rangel, O., 2002. Late-glacial and Holocene history of the dry forest area 
@@ -334,17 +338,6 @@ in the south Colombian Cauca Valley. _Journal of Quaternary Science_ 17, 667-682
 
 Blaauw, M., 2010. Methods and code for 'classical' age-modelling of radiocarbon sequences. Quaternary Geochronology 5, 512-518
 \url{http://dx.doi.org/10.1016/j.quageo.2010.01.002}
-}
-\seealso{
-\url{http://www.qub.ac.uk/chrono/blaauw/clam.html}
-\link{calibrate}
-\link{mix.calibrationcurves}
-\link{pMC.age}
-\link{age.pMC}
-\link{student.t}
-\link{deptime.depth}
-\link{deptime.age}
-\link{plot_proxies}
 }
 \author{
 Maarten Blaauw <maarten.blaauw@qub.ac.uk>
