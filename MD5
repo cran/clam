@@ -1,12 +1,13 @@
-9602a2021c95d437b3fe219032030e30 *DESCRIPTION
+d0118e88930bc2b7e331946dce9c4839 *DESCRIPTION
 498ca402f58216ac3fabb5f12f75e58a *NAMESPACE
-84d200056dca37318d51f3cbeb60c1d4 *NEWS.md
-75e4787ca16c5ff5b076bcda77a64bab *R/calibrate.R
-97ff7aa081585286d591b24f2af98ab3 *R/clam.R
+1c17dab23e0331fcc11dff1c4c9f95e3 *NEWS.md
+ed2aefd41875ac9cc00cc622dc8d9a14 *R/calibrate.R
+477ba1123cc55deaedf8a2af55e58a3f *R/clam.R
 bb4ec7fb23b91468dcfe1c3aa1b86e8b *R/models.R
 80c2f452f394fc146f91d549e27a86fb *R/plots.R
 c3ae7022f2d89a402bf05fb0a20e3263 *R/postanalysis.R
 4825c9f1a152002e90c8023c83ce3795 *R/readwrite.R
+f02dc3c6ef36c7f8f537eae8c822d28f *build/partial.rdb
 a724e5cc29481f1c85050aadd3ea0388 *inst/extdata/Example/Example.csv
 59018c30b2fcc302fb165adc8117feea *inst/extdata/Example/Example_1.txt
 d7ebcbaf1cd5b3b98e756bf08b16bd04 *inst/extdata/Example/Example_470.txt
@@ -16,7 +17,7 @@ a0863cc3f5fd0ddacf5947a18000855f *inst/extdata/Example/Example_depths.txt
 8014cfebd2afd2a9b01cd520002f442b *man/add.dates.Rd
 018bfd097b3ac18f38c5f0fd6f8c4de8 *man/calBP.14C.Rd
 7b277646da4e0e8bb5ccb539cddda825 *man/calibrate.Rd
-4c435afb7c4fb050bbe06a158e792281 *man/clam.Rd
+ad973b0dc017ad0ebb9f21ec2ceccf2f *man/clam.Rd
 b39faf5d529489636d71aa6a40448010 *man/deptime.age.Rd
 9ae13e1e6c40f7422863b4b08eceb1f2 *man/deptime.depth.Rd
 066f5be2b83507d26584caf93c0be1c3 *man/mix.calibrationcurves.Rd
