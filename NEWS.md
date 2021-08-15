@@ -1,3 +1,11 @@
+# clam 2.4.0
+* calibrate() and calBP.14C() are now provided by the IntCal package
+* replaced .hpd() as now provided as hpd() by the IntCal package
+* replaced copyCalibrationCurve() with ccurve() in plots.R
+* added vignettes
+* some general cleanup of the code
+* if depthseq is provided, the depth scale is now plotted correctly
+
 # clam 2.3.9
 * removed closeAllConnections, as directed by CRAN's maintainers
 
@@ -50,7 +58,7 @@
 * repaired bug with slump, causing some dates to be assigned wrong depths
 * corrected bug with drawing sample thickness when extradates applied
 * new option for est, midpoint of entire calibrated distributions (above threshold, est=7). This differs slightly from the midpoint of the calibrated hpd ranges (est=3)
-* minor changes to the manual, incl. more explicit citation suggestions
+* minor changes to the manual, including more explicit citation suggestions
 * added function student.t to show effect alternative calibration
 
 # clam 2.1
