@@ -1,4 +1,4 @@
-# removed calibrate(), .hpd() and calBP.14C() as these are now provided by the IntCal R package. 
+# removed calibrate(), .hpd() and calBP.14C() as these are now provided by the rintcal R package. 
 # kept student.t() and .caldist() Aug 2021
 
 # See Christen and Perez 2009, Radiocarbon 51:1047-1059. Instead of assuming the standard Gaussian model (default in clam), a student t distribution can be used with two parameters. Christen and Perez 2009 suggest t.a = 3 and t.b = 4; this can be put as clam( calibt=c(3,4) )
@@ -7,14 +7,14 @@
 
 #(t.b + ((y-x)^2) / (2*(error^2))) ^ (-1*(t.a+0.5))
 
-#' @name student.t 
-#' @title Comparison dates calibrated using both the student-t distribution and the the normal distribution.
-#' @description Visualise how a date calibrates using the student-t distribution and the the normal distribution.
-#' @details Radiocarbon and other dates are usually modelled using the normal distribution (red curve). The student-t approach (grey distribution) however allows for wider tails and thus tends to better accommodate outlying dates. This distribution requires two parameters, called 'a' and 'b'.
+#' @name calib.t 
+#' @title Comparison dates calibrated using both the t distribution (Christen and Perez 2009) and the normal distribution.
+#' @description Visualise how a date calibrates using the t distribution and the normal distribution.
+#' @details Radiocarbon and other dates are usually modelled using the normal distribution (red curve). The t approach (grey distribution) however allows for wider tails and thus tends to better accommodate outlying dates. This distribution requires two parameters, called 'a' and 'b'.
 #' @param y The reported mean of the date.
 #' @param error The reported error of the date.
-#' @param t.a Value for the student-t parameter \code{a}.
-#' @param t.b Value for the student-t parameter \code{b}.
+#' @param t.a Value for the t parameter \code{a}.
+#' @param t.b Value for the t parameter \code{b}.
 #' @param postbomb Which postbomb curve to use for negative 14C dates
 #' @param cc calibration curve for C14 dates (1, 2 or 3).
 #' @param cc1 For northern hemisphere terrestrial C14 dates.
@@ -28,14 +28,14 @@
 #' @param rule How should R's approx function deal with extrapolation. If \code{rule=1}, the default, then NAs are returned for such points and if it is 2, the value at the closest data extreme is used.
 #' @author Maarten Blaauw
 #' @examples 
-#' student.t() 
+#' calib.t() 
 #' 
 #' @export
-student.t <- function(y=2450, error=50, t.a=3, t.b=4, cc=1, postbomb=NULL, cc1="IntCal20", cc2="Marine20", cc3="SHCal20", cc4="mixed", ccdir="",Cutoff=1e-5, times=8, rule=1) {
+calib.t <- function(y=2450, error=50, t.a=3, t.b=4, cc=1, postbomb=NULL, cc1="IntCal20", cc2="Marine20", cc3="SHCal20", cc4="mixed", ccdir="", Cutoff=1e-5, times=8, rule=1) {
   ccdir <-.validateDirectoryName(ccdir)
   # set the calibration curve
   if(ccdir=="")
-    ccdir = paste(system.file("extdata", package="IntCal"), "/", sep="")
+    ccdir = paste(system.file("extdata", package="rintcal"), "/", sep="")
 
   if(cc == 0) {
     x <- seq(y-(times*error), y+(times*error), length=500)
@@ -67,11 +67,11 @@ student.t <- function(y=2450, error=50, t.a=3, t.b=4, cc=1, postbomb=NULL, cc1="
       if (length(postbomb) == 0) 
         stop("Warning, negative ages require a postbomb curve. Provide value for postbomb")
     else {
-      if(postbomb==1) bomb <- read.table(system.file("extdata","postbomb_NH1.14C", package="IntCal"))[,1:3] else
-        if(postbomb==2) bomb <- read.table(system.file("extdata","postbomb_NH2.14C", package="IntCal"))[,1:3] else
-          if(postbomb==3) bomb <- read.table(system.file("extdata","postbomb_NH3.14C", package="IntCal"))[,1:3] else
-            if(postbomb==4) bomb <- read.table(system.file("extdata","postbomb_SH1-2.14C", package="IntCal"))[,1:3] else
-              if(postbomb==5) bomb <- read.table(system.file("extdata","postbomb_SH3.14C", package="IntCal"))[,1:3] else
+      if(postbomb==1) bomb <- read.table(system.file("extdata","postbomb_NH1.14C", package="rintcal"))[,1:3] else
+        if(postbomb==2) bomb <- read.table(system.file("extdata","postbomb_NH2.14C", package="rintcal"))[,1:3] else
+          if(postbomb==3) bomb <- read.table(system.file("extdata","postbomb_NH3.14C", package="rintcal"))[,1:3] else
+            if(postbomb==4) bomb <- read.table(system.file("extdata","postbomb_SH1-2.14C", package="rintcal"))[,1:3] else
+              if(postbomb==5) bomb <- read.table(system.file("extdata","postbomb_SH3.14C", package="rintcal"))[,1:3] else
                 stop("Warning, cannot find postbomb curve #", postbomb, " (use values of 1 to 5 only)")
               
       bomb.x <- seq(max(bomb[, 1]), min(bomb[, 1]), length = 500)
@@ -101,7 +101,7 @@ student.t <- function(y=2450, error=50, t.a=3, t.b=4, cc=1, postbomb=NULL, cc1="
 	  ylim = c(0, max(t.cal[,2], norm.cal[, 2])), col = 2, lwd = 1.5)
     polygon(t.cal, col = rgb(0, 0, 0, 0.25), border = rgb(0, 0, 0, 0.5))
     legend("topleft", "Gaussian", text.col = 2, bty = "n")
-    legend("topright", paste("student-t (a=", t.a, ", b=", t.b, ")", sep = ""), bty = "n", text.col = grey(0.4))
+    legend("topright", paste("t (a=", t.a, ", b=", t.b, ")", sep = ""), bty = "n", text.col = grey(0.4))
   }     
 
 }

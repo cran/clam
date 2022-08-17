@@ -9,16 +9,16 @@
 #' @importFrom graphics abline image layout legend lines par points polygon rect plot
 #' @importFrom stats approx density dnorm lm loess pnorm predict qnorm quantile rnorm runif smooth.spline spline weighted.mean
 #' @importFrom utils packageName read.csv read.table write.table 
-#' @import IntCal
+#' @import rintcal
 #' @name clam
 NULL  
 
 # do: 
 
-# done: Add vignettes. 
+# done: 
 
 # so that functions such as pMC.age etc. are available immediately
-library(IntCal)
+library(rintcal)
 
 #' @name clam
 #' @title The main age-depth modelling function
@@ -197,7 +197,7 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
 
   coredir <- assign_coredir(coredir, core, ask)
   if(core == "Example") {
-    dir.create(paste(coredir, "Example/", sep=""), showWarnings = FALSE, recursive = TRUE)
+    dir.create(file.path(coredir, "Example/"), showWarnings = FALSE, recursive = TRUE)
     fileCopy <- system.file("extdata/Example/", package="clam")
     file.copy(fileCopy, coredir, recursive = TRUE, overwrite=FALSE)
   } 
@@ -206,7 +206,7 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
   if(type > 5 || type < 1 || prob < 0 || prob > 1 || its < 100 || wghts < 0 || wghts > 1 || est < 1 || est > 7 || yrsteps <= 0 || hpdsteps <= 0 || every <= 0 || decimals < 0 || cmyr < 0 || cmyr > 1 || thickness < 0 || times < 1 || calhght < 0 || (type==5 && length(hiatus)>0))
     stop("\n Warning, clam cannot run with these settings! Please check the manual.\n\n", call.=FALSE)
 
-  csvFile <- paste(coredir, core, "/", core, ext, sep="")
+  csvFile <- paste0(coredir, core, "/", core, ext)
   if(!file.exists(csvFile))
     stop(paste("\nInput data file", csvFile, "not found."), call.=FALSE)
   dets <- read.csv(csvFile, sep=sep)
@@ -216,7 +216,7 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
     message(" Warning, depths not in ascending order (top ones should come first).")
 
   # avoid Windows/Mac habit of silently adding .txt extension to plain text files
-  bill <- list.files(paste(coredir, core, sep=""), pattern=".csv.txt")
+  bill <- list.files(file.path(coredir, core), pattern=".csv.txt")
   if(length(bill) > 0) {
     message("Removing unnecessary .txt extension from .csv file", bill[1])
     file.rename(file.path(coredir, core, paste0(core, ".csv.txt")),
@@ -226,7 +226,7 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
   # set the calibration curve
   ccdir <- .validateDirectoryName(ccdir)
   if(ccdir == "") # so, if no alternative folder provided, use clam's calibration curves
-    ccdir = system.file("extdata", package="IntCal")
+    ccdir = system.file("extdata", package="rintcal")
   if(cc==1) calcurve <- read.table(file.path(ccdir, cc1)) else
     if(cc==2) calcurve <- read.table(file.path(ccdir, cc2)) else
       if(cc==3) calcurve <- read.table(file.path(ccdir, cc3)) else
@@ -247,7 +247,7 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
           if(postbomb>5)
             stop("I do not understand which postbomb curve you mean, check the manual", call.=FALSE)
           yrsteps <- min(pbsteps, yrsteps)
-          pb <- read.table(system.file("extdata", pbnames[postbomb], package="IntCal")) # now points to IntCal package
+          pb <- read.table(system.file("extdata", pbnames[postbomb], package="rintcal")) # now points to rintcal package
           pb.x <- seq(min(pb[,1]), max(pb[,1]), by=yrsteps)
           pb.y <- approx(pb[,1], pb[,2], pb.x)$y
           pb.sd <- approx(pb[,1], pb[,3], pb.x)$y
@@ -408,7 +408,7 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
   .ageplot(yrmin, yrmax, dmin, dmax, revaxes, revd, revyr, yrlab, dlab, hiatus, depthseq, outliers, plotrange, BCAD, greyscale, if(length(greyscale)>0) get('chron') else NULL, C14col, outcol, outlsize, bestcol, rangecol, dat, calrange, depth, calhght, maxhght, mirror, calcol, slump, slumpcol, plotname, core, bty, mar, mgp, ash)
 
   # write files providing calibrated dates, age-model and settings
-  colnames(calrange) <- c("Depth", paste("min.", 100*prob, "%range", sep=""), paste("max.", 100*prob, "%range", sep=""), "point")
+  colnames(calrange) <- c("Depth", paste0("min.", 100*prob, "%range"), paste0("max.", 100*prob, "%range"), "point")
   .write.clam(dat, coredir, runname, calrange, core, prob, type, remove.reverse, smooth, wghts, its, outliers, ignore, est, BCAD, yrsteps, every, decimals, cmyr, depth, depthseq, hiatus, gfit, reversal, plotpdf, plotpng, yrmin, yrmax, dmin, dmax, dlab, yrlab, plotrange, greyscale, if(length(greyscale)>0) get('chron') else NULL, C14col, outcol, outlsize, bestcol, rangecol, calhght, maxhght, mirror, calcol, slump, slumpcol, revaxes, revyr, revd, calibt, youngest, extradates, plotname, calcurve, ccname, postbomb, pbnames, depths.file, bty, mar, mgp, ash)
 
   if(storedat) {
@@ -439,7 +439,7 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
   # report the confidence ranges, the goodness-of-fit, and whether any age-reversals occurred
   rng <- round(calrange[,3]-calrange[,2])
   message("\n", core, "'s ", 100*prob, "% confidence ranges span from ", min(rng), " to ", max(rng), " yr (average ", round(mean(rng)), " yr)")
-  message("  Fit (-log, lower is better):", gfit)
+  message("  Fit (-log, lower is better): ", gfit)
   if(reversal) 
     message("  Age reversals occurred. Try other model?\n")
 }
@@ -474,7 +474,7 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
       if(length(warp) > remove.reverse*its)
         message("\n !!! Too many models with age reversals!!!\n") else
           {
-            message("\n Removing", length(warp), "models with age reversals,", its-length(warp), "models left...")
+            message("\n Removing ", length(warp), " models with age reversals, ", its-length(warp), " models left...")
             chron <- chron[,-warp]
             smp <- smp[,-warp,]
           }

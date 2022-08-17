@@ -1,7 +1,7 @@
 
 .ageplot <- function(yrmin, yrmax, dmin, dmax, revaxes, revd, revyr, yrlab, dlab, hiatus, depthseq, outliers, plotrange, BCAD, greyscale, chron, C14col, outcol, outlsize, bestcol, rangecol, dat, calrange, depth, calhght, maxhght, mirror, calcol, slump, slumpcol, plotname, name, bty="l", mar, mgp, ash=FALSE) {
     # set up initial parameters
-    if(length(dlab)==0) dlab <- paste("Depth (", depth, ")", sep="")
+    if(length(dlab)==0) dlab <- paste0("Depth (", depth, ")")
     ifelse(BCAD || !revyr, yr.lim <- c(yrmin, yrmax), yr.lim <- c(yrmax, yrmin))
     if(revd) d.lim <- c(dmax, dmin) else d.lim <- c(dmin, dmax)
 
@@ -135,7 +135,7 @@
 #' @export
 add.dates <- function(mn, sdev, depth, cc=1, above=1e-3, exx=50, normal=TRUE, normalise=TRUE, t.a=3, t.b=4, age.res=100, times=20, col=rgb(1,0,0,.5), border=rgb(1,0,0,.5), rotate.axes=FALSE, mirror=TRUE, up=TRUE, BCAD=FALSE)  {
   if(cc > 0)
-    cc <- IntCal::ccurve(cc)
+    cc <- rintcal::ccurve(cc)
   
   for(i in 1:length(mn)) {
     yrs <- seq(mn[i]-times*sdev[i], mn[i]+times*sdev[i], length=age.res)
