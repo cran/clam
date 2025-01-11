@@ -4,7 +4,7 @@
 # done: 
 
 # so that functions such as pMC.age etc. are available immediately
-library(rice)
+# library(rice)
 
 #' @name clam
 #' @title The main age-depth modelling function
@@ -167,8 +167,11 @@ library(rice)
 #' @author Maarten Blaauw
 #' @return Age model construction together with a text output and files saved to a folder in the \code{coredir/core} directory.
 #' @examples 
-#'  clam(, coredir=tempdir()) # Create the example in Cores/Example folder
-#'  clam(, coredir=tempdir(), extradates=470) 
+#'   base_temp_dir <- tempdir()
+#'   clam_dir <- file.path(base_temp_dir, "clam_runs")
+#'   dir.create(clam_dir, recursive = TRUE, showWarnings = FALSE)
+#'   clam(, coredir=clam_dir, ask=FALSE) 
+#'   clam(, coredir=clam_dir, ask=FALSE, extradates=470)
 #' 
 #' @references
 #' Berrio, J.C., Hooghiemstra, H., Marchant, R., Rangel, O., 2002. Late-glacial and Holocene history of the dry forest area 
@@ -210,9 +213,9 @@ clam <- function(core="Example", type=1, smooth=NULL, prob=0.95, its=1000, cored
   }
 
   # set the calibration curve
-  ccdir <- .validateDirectoryName(ccdir)
-  if(ccdir == "") # so, if no alternative folder provided, use clam's calibration curves
-    ccdir = system.file("extdata", package="rintcal")
+  if(ccdir == "") 
+    ccdir = system.file("extdata", package="rintcal") else
+      ccdir <- .validateDirectoryName(ccdir)
   if(cc==1) calcurve <- read.table(file.path(ccdir, cc1)) else
     if(cc==2) calcurve <- read.table(file.path(ccdir, cc2)) else
       if(cc==3) calcurve <- read.table(file.path(ccdir, cc3)) else
