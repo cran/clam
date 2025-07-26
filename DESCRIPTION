@@ -1,7 +1,7 @@
 Package: clam
 Type: Package
 Title: Classical Age-Depth Modelling of Cores from Deposits
-Version: 2.6.2
+Version: 2.6.3
 Authors@R: c(
   person("Maarten", "Blaauw", email = "maarten.blaauw@qub.ac.uk", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-5680-1515")),
   person("J. Andres", "Christen", role = "ctb", comment = c(ORCID = "0000-0002-5795-4345")),
@@ -11,18 +11,19 @@ Description: Performs 'classical' age-depth modelling of dated sediment deposits
 License: GPL (>= 2)
 Language: en-GB
 Imports: grDevices, graphics, stats, utils, data.table, rintcal (>=
-        1.1.1)
-Depends: rice (>= 1.0.0)
+        1.3.0), rice (>= 1.3.0)
 RoxygenNote: 7.3.2
 Suggests: knitr, rmarkdown, utf8
 VignetteBuilder: knitr
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2025-01-11 11:58:35 UTC; maarten
-Author: Maarten Blaauw [aut, cre] (<https://orcid.org/0000-0002-5680-1515>),
-  J. Andres Christen [ctb] (<https://orcid.org/0000-0002-5795-4345>),
+Packaged: 2025-07-26 07:34:37 UTC; maarten
+Author: Maarten Blaauw [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-5680-1515>),
+  J. Andres Christen [ctb] (ORCID:
+    <https://orcid.org/0000-0002-5795-4345>),
   Judith Esquivel Vazquez [ctb],
   Simon Goring [ctb]
 Maintainer: Maarten Blaauw <maarten.blaauw@qub.ac.uk>
 Repository: CRAN
-Date/Publication: 2025-01-11 12:20:02 UTC
+Date/Publication: 2025-07-26 07:50:02 UTC
